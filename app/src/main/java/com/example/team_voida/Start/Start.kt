@@ -62,7 +62,7 @@ fun Start(){
         Text(
             modifier = Modifier.width(300.dp),
             lineHeight = 25.sp,
-            text = "시각 장애인을 위한 스크린 리더기 쇼핑앱입니다. 아래의 '계정 생성하기' 버튼을 눌러 회원가입을 진행해주세요. \n이미 계정이 있으시다면, 최하단의 버튼을 클릭해 로그인 해주세요!",
+            text = "시각 장애인을 위한 스크린 리더기 쇼핑앱입니다. 아래의 '계정 생성하기' 버튼을 눌러 회원가입을 진행해주세요. 이미 계정이 있으시다면, 최하단의 버튼을 클릭해 로그인 해주세요!",
             textAlign = TextAlign.Center,
             style = TextStyle(
                 color = TextColor,

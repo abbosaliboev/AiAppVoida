@@ -23,4 +23,6 @@ val WishButton = Color(249,249,249)
 val WishTurnOn = Color(248,17,64)
 val TextWhite = Color(243,243,243)
 val TextLittleDark = Color(32,32,32)
+val TextNotify = Color(0,0,0)
+val PlaceholderColor = Color(210,210,210)
 
