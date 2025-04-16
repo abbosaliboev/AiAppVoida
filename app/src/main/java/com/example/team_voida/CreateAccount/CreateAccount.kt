@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -254,6 +255,7 @@ fun CreateAccountContactField(
     placeholder: String
 ){
     val input = remember{ mutableStateOf("") }
+//    val spacedInput = remember { mutableStateOf("          "+input) }
     val interactionSource = remember{ MutableInteractionSource() }
 
     Box{
@@ -294,9 +296,11 @@ fun CreateAccountContactField(
 
             decorationBox = @Composable{ innerTextField ->
                 TextFieldDefaults.DecorationBox(
+                    contentPadding = PaddingValues(
+                        horizontal = 100.dp
+                    ),
                     placeholder = {
                         Row {
-                            Spacer(Modifier.width(80.dp))
                             Text(
                                 text = placeholder,
                                 color = Color.LightGray,
