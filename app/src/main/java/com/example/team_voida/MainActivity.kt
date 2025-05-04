@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.team_voida.CreateAccount.CreateAccount
+import com.example.team_voida.Nav.StartNav
 import com.example.team_voida.Start.Start
 import com.example.team_voida.ui.theme.Team_VoidaTheme
 
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CreateAccount()
+            StartNav()
         }
     }
 }

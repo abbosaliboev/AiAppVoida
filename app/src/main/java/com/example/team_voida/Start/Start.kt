@@ -2,6 +2,7 @@ package com.example.team_voida.Start
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.TextColor
@@ -34,7 +36,9 @@ import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
 
 @Composable
-fun Start(){
+fun Start(
+    navController: NavController
+){
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +81,9 @@ fun Start(){
                 .width(300.dp)
                 .height(65.dp)
                 .clip(shape = RoundedCornerShape(15.dp)),
-            onClick = {},
+            onClick = {
+                navController.navigate("createAccount")
+            },
             colors = ButtonColors(
                 containerColor = ButtonBlue,
                 contentColor = TextWhite,
@@ -96,7 +102,12 @@ fun Start(){
             )
         }
         Spacer(Modifier.height(15.dp))
-        Row {
+        Row (
+            modifier = Modifier
+                .clickable {
+                    navController.navigate("login")
+                }
+        ){
             Text(
                 modifier = Modifier
                     .width(200.dp),
