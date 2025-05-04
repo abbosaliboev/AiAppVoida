@@ -130,6 +130,198 @@ fun Guide1(
     }
 }
 
+@Composable
+fun Guide2(
+){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        Box(){
+            Image(
+
+                painter = painterResource(R.drawable.guide2),
+                contentDescription = ""
+            )
+            Column(
+
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .offset(
+                        x = 45.dp,
+                        y = 430.dp
+                    )
+                    .width(300.dp)
+            ){
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "음량 상하키로 음성검색",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 25.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                    )
+                )
+                Spacer(Modifier.height(15.dp))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "더 이상 검색 버튼을 찾지 못하는 문제는 없을 겁니다! 음량 상하 버튼을 동시에 눌러 음성 검색 기능을 활성화하세요!",
+                    color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        lineHeight = 25.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+                Spacer(Modifier.height(35.dp))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "우측으로 스와이프 →",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun Guide3(
+){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        Box(){
+            Image(
+
+                painter = painterResource(R.drawable.guide3),
+                contentDescription = ""
+            )
+            Column(
+
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .offset(
+                        x = 45.dp,
+                        y = 430.dp
+                    )
+                    .width(300.dp)
+            ){
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "제스처로 화면 확대",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 25.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                    )
+                )
+                Spacer(Modifier.height(15.dp))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "",
+                    color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        lineHeight = 25.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+                Spacer(Modifier.height(35.dp))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "우측으로 스와이프 →",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun Guide4(
+){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        Box(){
+            Image(
+
+                painter = painterResource(R.drawable.guide1),
+                contentDescription = ""
+            )
+            Column(
+
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .offset(
+                        x = 45.dp,
+                        y = 430.dp
+                    )
+                    .width(300.dp)
+            ){
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "안녕하세요 Vodia 쇼핑입니다.",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 25.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                    )
+                )
+                Spacer(Modifier.height(15.dp))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "본 어플리케이션은 시각 장애인을 위한 쇼핑앱으로, 스크린 리더기를 보다 편리하게 사용할 수 있게 디자인 되었습니다. 화면을 우측으로 스와이프 하여 보다 다양한 기능을 만나보세요.",
+                    color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        lineHeight = 25.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+                Spacer(Modifier.height(35.dp))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "우측으로 스와이프 →",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+            }
+        }
+    }
+}
+
 
 
 
