@@ -17,6 +17,7 @@ fun StartNav(){
 
     val navController = rememberNavController()
 
+    // check git hub
     NavHost(navController = navController, startDestination = "start") {
         composable("start") { Start(navController = navController) }
         composable("createAccount") { CreateAccount(navController = navController) }
