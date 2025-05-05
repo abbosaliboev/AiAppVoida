@@ -381,7 +381,7 @@ fun GuideButton(
             .clip(shape = RoundedCornerShape(15.dp))
         ,
         onClick = {
-            navController.navigate("guide")
+            navController.navigate("home")
         },
         colors = ButtonColors(
             containerColor = ButtonBlue,
