@@ -9,7 +9,6 @@ import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Login.Login
 import com.example.team_voida.Start.Guide
-import com.example.team_voida.Start.Guide1
 import com.example.team_voida.Start.Start
 
 @Composable
