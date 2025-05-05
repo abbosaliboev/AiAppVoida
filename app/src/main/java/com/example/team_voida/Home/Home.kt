@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,13 +29,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,22 +49,28 @@ import com.example.team_voida.ui.theme.TextLittleDark
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.concurrent.thread
 
 @Composable
 fun Home(
     navController: NavController
 ){
+    val scrollState = rememberScrollState()
     Column (
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .verticalScroll(scrollState)
 
     ){
         Notification("홈 화면입니다. 실시간 인기 상품과 특가 상품을 만나볼 수 있습니다. 화면을 아래로 스크롤하여 다양한 이벤트 상품을 만나보세요!")
         HomeSearchBar(navController)
         HomePopularRanking(navController)
         HomeProducts()
+        Notification("아래에 요즘 많이 담기는 특가 상품을 만나보세요!")
+        HomeBar(
+            navController = navController,
+            title = "많이 담는 특가"
+        )
     }
 }
 
@@ -136,14 +148,14 @@ fun HomeBar(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
                 .clickable {
-                    navController.navigate("")
+                    navController.navigate("home")
                 }
         ){
             Text(
                 modifier = Modifier
                     .offset(
                         x = -10.dp,
-                        y = 5.dp
+                        y = 7.dp
                     ),
 
                 textAlign = TextAlign.Center,
@@ -163,37 +175,89 @@ fun HomeBar(
     }
 }
 
+
+
 @Composable
 fun HomeProducts(){
 
     var result: List<Popular>? = null
-
+    var count: Int? = null
+    val index = remember { mutableStateOf(2) }
     runBlocking {
         val job = GlobalScope.launch {
             result = HomePopularCall()
         }
     }
 
-    Thread.sleep(5000L)
+    //Todo, control the time optimally...
+    // 분명 sleep with time 이 아닌
+    // wait로 처리하는 로직이 있을 거 같음.
+    Thread.sleep(1500L)
 
-    // debug
-//    if(result != null){
-//        Text(
-//            text = result.toString()
-//        )
-//    }
+
     if(result != null){
-        val tmpResult = result!![0]
-        HomeCard(
-            img = tmpResult.img,
-            rank = tmpResult.rank,
-            name = tmpResult.name,
-            price = tmpResult.price,
-            discount = tmpResult.discount
-        )
-//        result!!.forEachIndexed { index, popular ->
-//
-//        }
+        count = result!!.size
+    }
+
+    Column {
+        for(i in 1..index.value){
+            val realIndex = i-1
+            Row (
+                modifier = Modifier
+                    .padding(10.dp)
+            ){
+                if(count != null && index.value <= count){
+
+                    val tmpResult1 = result!![realIndex*2]
+                    val tmpResult2 = result!![realIndex*2+1]
+                    HomeCard(
+                        img = tmpResult1.img,
+                        rank = tmpResult1.rank,
+                        name = tmpResult1.name,
+                        price = tmpResult1.price,
+                        discount = tmpResult1.discount
+                    )
+                    HomeCard(
+                        img = tmpResult2.img,
+                        rank = tmpResult2.rank,
+                        name = tmpResult2.name,
+                        price = tmpResult2.price,
+                        discount = tmpResult2.discount
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .clickable {
+                    // index 값을 증가시켜, 해당 값에 따라 추가 아이템들이 나타나도록 구현
+                    if(count != null && index.value*2 < count){
+                        index.value += 1
+                    }
+                }
+        ){
+            Image(
+                modifier = Modifier
+                    .size(10.dp)
+                    .offset(
+                        y = 3.dp
+                    ),
+                painter = painterResource(R.drawable.arrow_down),
+                contentDescription = ""
+            )
+            Spacer(Modifier.width(3.dp))
+            Text(
+                text = "상품 더보기",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                )
+            )
+        }
     }
 }
 
@@ -207,50 +271,66 @@ fun HomeCard(
 ){
     Box(
         modifier = Modifier
-            .shadow(elevation = 10.dp)
+            // screen reader를 위해 텍스트를 한 묶음으로 처리
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString(name + "상품 입니다." + discount + "할인되어 가격은" + price + "입니다.")
+            }
+                /////////////////////////
+            .width(180.dp)
+            .padding(
+                start = 10.dp,
+                end = 10.dp,
+            )
     ){
         Image(
             painter = painterResource(R.drawable.home_rec),
             contentDescription = "",
+            modifier = Modifier.shadow(elevation = 15.dp, shape = RoundedCornerShape(15.dp))
         )
-        Image(
-            modifier = Modifier
-                .offset(
-                    y = 8.dp
+        Column (
+            modifier = Modifier.fillMaxSize()
+        ){
+
+            Image(
+                modifier = Modifier
+                    .offset(
+                        y = 10.dp
+                    )
+                    .size(170.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                ,
+                painter = rememberAsyncImagePainter(img),
+                contentDescription = name + "상품 이미지"
+            )
+            Column (
+                modifier = Modifier.offset(
+                    x = 12.dp,
+                    y = 14.dp
                 )
-                .clip(RoundedCornerShape(10.dp))
-                .width(300.dp)
-                .height(300.dp)
-            ,
-            painter = rememberAsyncImagePainter(img),
-            contentDescription = name + "상품 이미지",
-        )
-        Text(
-            modifier = Modifier
-                .offset(
-                    y = 45.dp
-                ),
-            textAlign = TextAlign.Center,
-            text = name,
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 15.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_regular)),
-            )
-        )
-        Text(
-            modifier = Modifier
-                .offset(
-                    y = 65.dp
-                ),
-            textAlign = TextAlign.Center,
-            text = price,
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 15.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-            )
-        )
+            ){
+                Text(
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.width(140.dp),
+                    text = name,
+                    color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+                Text(
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    text = price,
+                    color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                    )
+                )
+            }
+        }
     }
 }
 
