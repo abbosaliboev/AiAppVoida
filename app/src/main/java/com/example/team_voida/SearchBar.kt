@@ -77,7 +77,10 @@ fun SearchBar(
 
     val placeholder: String = "검색"
     val context = LocalContext.current
+
+    // input : store the search result
     var input = remember { mutableStateOf("") }
+
     val interactionSource = remember { MutableInteractionSource() }
 
     val speechRecognizerLauncher = rememberLauncherForActivityResult(
@@ -116,11 +119,13 @@ fun SearchBar(
                 // callFilter2Backend(input)
 
                 // 선택된 페이지에 관한 데이터는 이 함수의 input 변수를 활용
-                onDone = {}
+                onDone = {
+                    navController.navigate("searchResult")
+                }
             ),
-            value = input.value,
+            value = resultInput.value,
             onValueChange = {
-                input.value = it
+                resultInput.value = it
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,7 +168,7 @@ fun SearchBar(
                     visualTransformation = VisualTransformation.None,
                     enabled = true,
                     innerTextField = innerTextField,
-                    value = input.value.toString(),
+                    value = resultInput.value.toString(),
                     interactionSource = interactionSource,
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = TextColor,

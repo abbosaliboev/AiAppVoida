@@ -1,6 +1,6 @@
-package com.example.team_voida.Home
+package com.example.team_voida.SearchResult
 
-import android.util.Log
+import android.app.appsearch.SearchResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -38,198 +35,54 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.team_voida.Home.HomeSearchBar
+import com.example.team_voida.Home.Popular
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
-import com.example.team_voida.SearchBar
-import com.example.team_voida.ui.theme.TextLittleDark
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
+
 
 @Composable
-fun Home(
+fun SearchResult(
     navController: NavController,
-    input: MutableState<String>
+    input: MutableState<String>,
+    productName: String,
 ){
     val scrollState = rememberScrollState()
-    var result: List<Popular>? = null
-
-    runBlocking {
-        val job = GlobalScope.launch {
-            result = HomePopularCall()
-        }
-    }
-    Thread.sleep(1500L)
-
-
-    // TODO
-    // 임시로 result를 공통으로 사용
-    
     Column (
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .verticalScroll(scrollState)
 
-    ){
-        Notification("홈 화면입니다. 실시간 인기 상품과 특가 상품을 만나볼 수 있습니다. 화면을 아래로 스크롤하여 다양한 이벤트 상품을 만나보세요!")
+    ) {
+        Notification(productName + " 검색결과 입니다. 아래에 검색된 상품들을 만나보세요.")
         HomeSearchBar(
             navController,
             input
         )
-        HomePopularRanking(navController)
-        HomeProducts(
-            result = result
-        )
 
-        Notification("아래에 요즘 많이 담기는 특가 상품을 만나보세요!")
-        HomeBar(
-            navController = navController,
-            title = "많이 담는 특가"
+        SearchProducts(
+            sampleSearchResult.toList()
         )
-        HomeProducts(
-            result = result
-
-        )
-
-        Notification("아래에 오늘 하루만 진행하는 특가 이벤트 상품을 만나보세요!")
-        HomeBar(
-            navController = navController,
-            title = "하루 특가"
-        )
-        HomeProducts(
-            result = result
-
-        )
-
-        Notification("아래에 요즘 뜨고 있는 인기 신상품을 만나보세요!")
-        HomeBar(
-            navController = navController,
-            title = "인기 신상품"
-        )
-        HomeProducts(
-            result = result
-        )
-        Spacer(Modifier.height(45.dp))
+        Spacer(Modifier.height(30.dp))
     }
 }
 
 @Composable
-fun HomeSearchBar(
-    navController: NavController,
-    input: MutableState<String>
-){
-    Row(
-        modifier = Modifier
-
-    ){
-        Text(
-            modifier = Modifier
-                .offset(
-                    x = 15.dp,
-                    y = 5.dp
-                ),
-            textAlign = TextAlign.Center,
-            text = "Shop",
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 35.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-            )
-        )
-        Spacer(Modifier.width(7.dp))
-        SearchBar(
-            navController = navController,
-            resultInput = input
-        )
-    }
-}
-
-@Composable
-fun HomePopularRanking(
-    navController: NavController
-){
-    Column {
-        HomeBar(
-            navController = navController,
-            title = "실시간 인기"
-        )
-    }
-}
-
-
-// Home Bar which represented repeatedly
-@Composable
-fun HomeBar(
-    navController: NavController,
-    title: String
-){
-    Row (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ){
-        Text(
-            modifier = Modifier,
-//                    .offset(
-//                        x = 15.dp,
-//                        y = 5.dp
-//                    ),
-            textAlign = TextAlign.Center,
-            text = title,
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 25.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-            )
-        )
-        Row (
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .clickable {
-                    navController.navigate("home")
-                }
-        ){
-            Text(
-                modifier = Modifier
-                    .offset(
-                        x = -10.dp,
-                        y = 7.dp
-                    ),
-
-                textAlign = TextAlign.Center,
-                text = "모두 보기",
-                color = TextLittleDark,
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-                )
-            )
-            Icon(
-                painter = painterResource(R.drawable.arrow_button),
-                contentDescription = "모두 보기 버튼",
-                tint = Color.Unspecified
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun HomeProducts(
+fun SearchProducts(
     result: List<Popular>? = null
 ){
 
     var count: Int? = null
-    val index = remember { mutableStateOf(2) }
+
+    // represent {index * 2} items
+    val index = remember { mutableStateOf(5) }
 
 
     //Todo, control the time optimally...
@@ -252,14 +105,14 @@ fun HomeProducts(
 
                     val tmpResult1 = result!![realIndex*2]
                     val tmpResult2 = result!![realIndex*2+1]
-                    HomeCard(
+                    SearchCard(
                         img = tmpResult1.img,
                         rank = tmpResult1.rank,
                         name = tmpResult1.name,
                         price = tmpResult1.price,
                         discount = tmpResult1.discount
                     )
-                    HomeCard(
+                    SearchCard(
                         img = tmpResult2.img,
                         rank = tmpResult2.rank,
                         name = tmpResult2.name,
@@ -277,7 +130,7 @@ fun HomeProducts(
                 .clickable {
                     // index 값을 증가시켜, 해당 값에 따라 추가 아이템들이 나타나도록 구현
                     if(count != null && index.value*2 < count){
-                        index.value += 1
+                        index.value += 5
                     }
                 }
         ){
@@ -304,7 +157,7 @@ fun HomeProducts(
 }
 
 @Composable
-fun HomeCard(
+fun SearchCard(
     img: String,
     rank: String,
     name: String,
@@ -317,7 +170,7 @@ fun HomeCard(
             .semantics(mergeDescendants = true){
                 text = AnnotatedString(name + "상품 입니다." + discount + "할인되어 가격은" + price + "입니다.")
             }
-                /////////////////////////
+            /////////////////////////
             .width(180.dp)
             .padding(
                 start = 10.dp,
@@ -375,4 +228,3 @@ fun HomeCard(
         }
     }
 }
-

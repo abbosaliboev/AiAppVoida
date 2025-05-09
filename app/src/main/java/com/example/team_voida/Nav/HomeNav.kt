@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,11 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.team_voida.Basket.Basket
 import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
 import com.example.team_voida.Login.Login
 import com.example.team_voida.R
+import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
 import com.example.team_voida.Start.Start
 
@@ -65,7 +68,7 @@ fun HomeNav(){
 
     val navController = rememberNavController()
     var selectedIndex by remember { mutableStateOf(0) }
-
+    val input = remember{ mutableStateOf("") }
 
     Scaffold(
         bottomBar = {
@@ -87,6 +90,15 @@ fun HomeNav(){
                     }
 
                     NavigationBarItem(
+                        colors = NavigationBarItemColors(
+                            selectedIndicatorColor = Color.Transparent,
+                            selectedTextColor = Color.Transparent,
+                            selectedIconColor = Color.Transparent,
+                            unselectedIconColor = Color.Transparent,
+                            unselectedTextColor = Color.Transparent,
+                            disabledIconColor = Color.Transparent,
+                            disabledTextColor = Color.Transparent
+                        ),
                         modifier = Modifier
                             .height(30.dp)
                             .offset(
@@ -122,10 +134,29 @@ fun HomeNav(){
             }
         }
     ){ inner ->
-        // check git hub
-        NavHost(modifier = Modifier.padding(inner), navController = navController, startDestination = "home") {
-            composable("home") { Home(navController = navController) }
-        }
-    }
+        when(selectedIndex){
+            0 -> NavHost(modifier = Modifier.padding(inner), navController = navController, startDestination = "home") {
+                composable("home") {
+                    Home(
+                        navController = navController,
+                        input = input
+                    )
+                }
+                composable("searchResult") {
+                    SearchResult(
+                        navController = navController,
+                        input = input,
+                        productName = input.value
+                    )
+                }
+            }
 
+            // temporally set the page
+            1 -> Basket()
+            2 -> Basket()
+            3 -> Basket()
+            4 -> Basket()
+        }
+        // check git hub
+    }
 }
