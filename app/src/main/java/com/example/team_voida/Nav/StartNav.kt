@@ -24,7 +24,7 @@ fun StartNav(){
         composable("login"){ Login(navController = navController) }
         composable("naming") { CreateAccountNaming(navController = navController) }
         composable("guide") { Guide(navController = navController) }
-        composable("home") { Home(navController = navController) }
+        composable("home") { HomeNav() }
     }
 }
 
