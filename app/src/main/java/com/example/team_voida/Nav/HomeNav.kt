@@ -66,7 +66,8 @@ val navItemList = listOf(
 @Composable
 fun HomeNav(){
 
-    val navController = rememberNavController()
+    val navController = rememberNavController() // home nav
+    val basketController = rememberNavController()
     var selectedIndex by remember { mutableStateOf(0) }
     val input = remember{ mutableStateOf("") }
 
@@ -152,10 +153,22 @@ fun HomeNav(){
             }
 
             // temporally set the page
-            1 -> Basket()
-            2 -> Basket()
-            3 -> Basket()
-            4 -> Basket()
+            1 ->
+                // NavHost(For heart)
+                Basket()
+            2 ->
+                // NavHost(For Categories)
+                Basket()
+            3 ->
+                // NavHost(For Basket)
+                NavHost(modifier = Modifier.padding(inner), navController = basketController, startDestination = "basket"){
+                    composable("basket"){
+                        Basket()
+                    }
+                }
+            4 ->
+                // NavHost(For Profile)
+                Basket()
         }
         // check git hub
     }
