@@ -55,6 +55,19 @@ fun Home(
     navController: NavController
 ){
     val scrollState = rememberScrollState()
+    var result: List<Popular>? = null
+
+    runBlocking {
+        val job = GlobalScope.launch {
+            result = HomePopularCall()
+        }
+    }
+    Thread.sleep(1500L)
+
+
+    // TODO
+    // 임시로 result를 공통으로 사용
+    
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -65,11 +78,37 @@ fun Home(
         Notification("홈 화면입니다. 실시간 인기 상품과 특가 상품을 만나볼 수 있습니다. 화면을 아래로 스크롤하여 다양한 이벤트 상품을 만나보세요!")
         HomeSearchBar(navController)
         HomePopularRanking(navController)
-        HomeProducts()
+        HomeProducts(
+            result = result
+        )
+
         Notification("아래에 요즘 많이 담기는 특가 상품을 만나보세요!")
         HomeBar(
             navController = navController,
             title = "많이 담는 특가"
+        )
+        HomeProducts(
+            result = result
+
+        )
+
+        Notification("아래에 오늘 하루만 진행하는 특가 이벤트 상품을 만나보세요!")
+        HomeBar(
+            navController = navController,
+            title = "하루 특가"
+        )
+        HomeProducts(
+            result = result
+
+        )
+
+        Notification("아래에 요즘 뜨고 있는 인기 신상품을 만나보세요!")
+        HomeBar(
+            navController = navController,
+            title = "인기 신상품"
+        )
+        HomeProducts(
+            result = result
         )
     }
 }
@@ -178,21 +217,17 @@ fun HomeBar(
 
 
 @Composable
-fun HomeProducts(){
+fun HomeProducts(
+    result: List<Popular>? = null
+){
 
-    var result: List<Popular>? = null
     var count: Int? = null
     val index = remember { mutableStateOf(2) }
-    runBlocking {
-        val job = GlobalScope.launch {
-            result = HomePopularCall()
-        }
-    }
+
 
     //Todo, control the time optimally...
     // 분명 sleep with time 이 아닌
     // wait로 처리하는 로직이 있을 거 같음.
-    Thread.sleep(1500L)
 
 
     if(result != null){
