@@ -110,6 +110,7 @@ fun Home(
         HomeProducts(
             result = result
         )
+        Spacer(Modifier.height(45.dp))
     }
 }
 

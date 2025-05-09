@@ -2,9 +2,15 @@ package com.example.team_voida.Nav
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,28 +35,28 @@ import com.example.team_voida.Start.Start
 
 val navItemList = listOf(
     BottomNav(
-        selected = R.drawable.bottom_home,
-        unSelected = R.drawable.bottom_sel_home,
+        unSelected = R.drawable.bottom_home,
+        selected = R.drawable.bottom_sel_home,
         notify = "홈 화면 이동 버튼"
     ),
     BottomNav(
-        selected = R.drawable.bottom_heart,
-        unSelected = R.drawable.bottom_sel_heart,
+        unSelected = R.drawable.bottom_heart,
+        selected = R.drawable.bottom_sel_heart,
         notify = "찜 화면 이동 버튼"
     ),
     BottomNav(
-        selected = R.drawable.bottom_categories,
-        unSelected = R.drawable.bottom_sel_categories,
+        unSelected = R.drawable.bottom_categories,
+        selected = R.drawable.bottom_sel_categories,
         notify = "카테고리 화면 이동 버튼"
     ),
     BottomNav(
-        selected = R.drawable.bottom_cart,
-        unSelected = R.drawable.bottom_sel_basket,
+        unSelected = R.drawable.bottom_cart,
+        selected = R.drawable.bottom_sel_basket,
         notify = "장바구니 화면 이동 버튼"
     ),
     BottomNav(
-        selected = R.drawable.bottom_profile,
-        unSelected = R.drawable.bottom_sel_profile,
+        unSelected = R.drawable.bottom_profile,
+        selected = R.drawable.bottom_sel_profile,
         notify = "계정 화면 이동 버튼"
     )
 )
@@ -72,22 +78,41 @@ fun HomeNav(){
                 containerColor = Color.White
             ){
                 navItemList.forEachIndexed { index, item ->
+                    var tmpIndex = 0.dp
+                    if(index == selectedIndex){
+                        tmpIndex = 3.8.dp
+                        if(index == 1){
+                            tmpIndex = 4.dp
+                        }
+                    }
+
                     NavigationBarItem(
                         modifier = Modifier
-                            .height(30.dp),
+                            .height(30.dp)
+                            .offset(
+                                y = tmpIndex
+                            )
+                        ,
                         selected = selectedIndex == index,
                         onClick = {
                             selectedIndex = index
                         },
                         icon = {
                             if(index == selectedIndex){
-                                Image(
-                                    painter = painterResource(item.unSelected),
-                                    contentDescription = item.notify
-                                )
+                                Column {
+                                    Image(
+                                        modifier = Modifier
+                                            .size(27.dp)
+                                        ,
+                                        painter = painterResource(item.selected),
+                                        contentDescription = item.notify
+                                    )
+                                }
                             } else{
                                 Image(
-                                    painter = painterResource(item.selected),
+                                    modifier = Modifier
+                                        .size(20.dp),
+                                    painter = painterResource(item.unSelected),
                                     contentDescription = item.notify
                                 )
                             }
