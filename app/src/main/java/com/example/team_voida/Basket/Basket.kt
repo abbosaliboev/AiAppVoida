@@ -1,19 +1,27 @@
 package com.example.team_voida.Basket
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -21,7 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.AnnotatedString
@@ -29,12 +39,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.Selected
+import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 
 @Composable
@@ -51,6 +64,14 @@ fun Basket(){
     ){
         Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
         BasketCartNum(cartNum)
+        Spacer(Modifier.height(15.dp))
+        BasketItem(
+            img = basketSample.img,
+            name = basketSample.name,
+            option = basketSample.option,
+            num = basketSample.num,
+            price = basketSample.price
+        )
     }
 }
 
@@ -102,4 +123,119 @@ fun BasketCartNum(
     }
 }
 
+@Composable
+fun BasketItem(
+    img: String,
+    name: String,
+    option: String,
+    num: Int,
+    price: String
+){
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 10.dp,
+                end = 10.dp,
+                bottom = 10.dp
+            )
+    ){
+        Image(
+            painter = rememberAsyncImagePainter(img),
+            contentDescription = "",
+            modifier = Modifier
+                .width(150.dp)
+                .height(150.dp)
+                .border(
+                    width = 4.dp,
+                    shape = RoundedCornerShape(14.dp),
+                    color = Color.White
+                )
+                .shadow(elevation = 15.dp, shape = RoundedCornerShape(15.dp))
+        )
 
+        Column (
+            modifier = Modifier
+                .padding(
+                    start = 10.dp
+                )
+                .fillMaxHeight()
+        ){
+            Row (
+                modifier = Modifier
+            ){
+
+                // product name
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(9f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    text = name,
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                        fontSize = 16.sp
+                    ),
+                )
+
+                // del button
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1.5f)
+                        .height(32.dp)
+                        .offset(
+                            y = -3.dp
+                        )
+                    ,
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonColors(
+                        contentColor = Color.Transparent,
+                        containerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
+                    ),
+                    onClick = {}
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.basket_del),
+                        contentDescription = "",
+                        modifier = Modifier
+//                            .width(30.dp)
+//                            .height(30.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // price row
+            Row (
+                modifier = Modifier
+            ){
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(9f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    text =
+                        if(option == "null"){
+                            "옵션 없음"
+                        } else {
+                            option
+                        }
+                    ,
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                        fontSize = 16.sp
+                    ),
+                )
+            }
+
+        }
+    }
+}
