@@ -27,10 +27,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.team_voida.Basket.Basket
+import com.example.team_voida.Basket.BasketPaymentButton
 import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
 import com.example.team_voida.Login.Login
+import com.example.team_voida.ProductInfo.ProductInfo
+import com.example.team_voida.ProductInfo.ProductInfoBottomBar
+import com.example.team_voida.ProductInfo.sampleProductInfoData
 import com.example.team_voida.R
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
@@ -69,107 +73,117 @@ fun HomeNav(){
     val navController = rememberNavController() // home nav
     val basketController = rememberNavController()
     var selectedIndex by remember { mutableStateOf(0) }
+    val basketFlag = remember { mutableStateOf(false) }
+    val homeNavFlag = remember { mutableStateOf(true)}
+    val productFlag = remember{ mutableStateOf(false) }
+    val dynamicTotalPrice = remember { mutableStateOf("") }
+
     val input = remember{ mutableStateOf("") }
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = Color.LightGray
-                    ),
-                containerColor = Color.White
-            ){
-                navItemList.forEachIndexed { index, item ->
-                    var tmpIndex = 0.dp
-                    if(index == selectedIndex){
-                        tmpIndex = 3.8.dp
-                        if(index == 1){
-                            tmpIndex = 4.dp
+            Column {
+                if(basketFlag.value){
+                    BasketPaymentButton(dynamicTotalPrice.value)
+                }
+                if(productFlag.value){
+                    ProductInfoBottomBar(sampleProductInfoData.price)
+                }
+                if(homeNavFlag.value){
+                    NavigationBar(
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray
+                            ),
+                        containerColor = Color.White
+                    ){
+                        navItemList.forEachIndexed { index, item ->
+                            var tmpIndex = 0.dp
+                            if(index == selectedIndex){
+                                tmpIndex = 3.8.dp
+                                if(index == 1){
+                                    tmpIndex = 4.dp
+                                }
+                            }
+
+                            NavigationBarItem(
+                                colors = NavigationBarItemColors(
+                                    selectedIndicatorColor = Color.Transparent,
+                                    selectedTextColor = Color.Transparent,
+                                    selectedIconColor = Color.Transparent,
+                                    unselectedIconColor = Color.Transparent,
+                                    unselectedTextColor = Color.Transparent,
+                                    disabledIconColor = Color.Transparent,
+                                    disabledTextColor = Color.Transparent
+                                ),
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .offset(
+                                        y = tmpIndex
+                                    )
+                                ,
+                                selected = selectedIndex == index,
+                                onClick = {
+                                    selectedIndex = index
+                                    if(selectedIndex == 0) navController.navigate("home")
+                                    else if(selectedIndex == 3) navController.navigate("basket")
+                                },
+                                icon = {
+                                    if(index == selectedIndex){
+                                        Column {
+                                            Image(
+                                                modifier = Modifier
+                                                    .size(27.dp)
+                                                ,
+                                                painter = painterResource(item.selected),
+                                                contentDescription = item.notify
+                                            )
+                                        }
+                                    } else{
+                                        Image(
+                                            modifier = Modifier
+                                                .size(20.dp),
+                                            painter = painterResource(item.unSelected),
+                                            contentDescription = item.notify
+                                        )
+                                    }
+                                }
+                            )
                         }
                     }
-
-                    NavigationBarItem(
-                        colors = NavigationBarItemColors(
-                            selectedIndicatorColor = Color.Transparent,
-                            selectedTextColor = Color.Transparent,
-                            selectedIconColor = Color.Transparent,
-                            unselectedIconColor = Color.Transparent,
-                            unselectedTextColor = Color.Transparent,
-                            disabledIconColor = Color.Transparent,
-                            disabledTextColor = Color.Transparent
-                        ),
-                        modifier = Modifier
-                            .height(30.dp)
-                            .offset(
-                                y = tmpIndex
-                            )
-                        ,
-                        selected = selectedIndex == index,
-                        onClick = {
-                            selectedIndex = index
-                        },
-                        icon = {
-                            if(index == selectedIndex){
-                                Column {
-                                    Image(
-                                        modifier = Modifier
-                                            .size(27.dp)
-                                        ,
-                                        painter = painterResource(item.selected),
-                                        contentDescription = item.notify
-                                    )
-                                }
-                            } else{
-                                Image(
-                                    modifier = Modifier
-                                        .size(20.dp),
-                                    painter = painterResource(item.unSelected),
-                                    contentDescription = item.notify
-                                )
-                            }
-                        }
-                    )
                 }
             }
         }
     ){ inner ->
-        when(selectedIndex){
-            0 -> NavHost(modifier = Modifier.padding(inner), navController = navController, startDestination = "home") {
-                composable("home") {
-                    Home(
-                        navController = navController,
-                        input = input
-                    )
-                }
-                composable("searchResult") {
-                    SearchResult(
-                        navController = navController,
-                        input = input,
-                        productName = input.value
-                    )
-                }
+        NavHost(modifier = Modifier.padding(inner), navController = navController, startDestination = "home") {
+            composable("home") {
+                Home(
+                    navController = navController,
+                    input = input
+                )
             }
-
-            // temporally set the page
-            1 ->
-                // NavHost(For heart)
-                Basket()
-            2 ->
-                // NavHost(For Categories)
-                Basket()
-            3 ->
-                // NavHost(For Basket)
-                NavHost(modifier = Modifier.padding(inner), navController = basketController, startDestination = "basket"){
-                    composable("basket"){
-                        Basket()
-                    }
-                }
-            4 ->
-                // NavHost(For Profile)
-                Basket()
+            composable("searchResult") {
+                SearchResult(
+                    navController = navController,
+                    input = input,
+                    productName = input.value
+                )
+            }
+            composable("basket") {
+                Basket(
+                    dynamicTotalPrice,
+                    basketFlag
+                )
+            }
+            composable("productInfo"){
+                ProductInfo(
+                    productInfoData = sampleProductInfoData,
+                    navController = navController,
+                    productFlag = productFlag,
+                    homeNavFlag = homeNavFlag
+                )
+            }
         }
-        // check git hub
     }
 }

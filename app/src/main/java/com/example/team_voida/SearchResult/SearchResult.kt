@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Home.HomeSearchBar
 import com.example.team_voida.Home.Popular
+import com.example.team_voida.Nav.navItemList
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 
@@ -68,7 +69,8 @@ fun SearchResult(
         )
 
         SearchProducts(
-            sampleSearchResult.toList()
+            sampleSearchResult.toList(),
+            navController
         )
         Spacer(Modifier.height(30.dp))
     }
@@ -76,7 +78,8 @@ fun SearchResult(
 
 @Composable
 fun SearchProducts(
-    result: List<Popular>? = null
+    result: List<Popular>? = null,
+    navController: NavController
 ){
 
     var count: Int? = null
@@ -110,14 +113,16 @@ fun SearchProducts(
                         rank = tmpResult1.rank,
                         name = tmpResult1.name,
                         price = tmpResult1.price,
-                        discount = tmpResult1.discount
+                        discount = tmpResult1.discount,
+                        navController = navController
                     )
                     SearchCard(
                         img = tmpResult2.img,
                         rank = tmpResult2.rank,
                         name = tmpResult2.name,
                         price = tmpResult2.price,
-                        discount = tmpResult2.discount
+                        discount = tmpResult2.discount,
+                        navController = navController
                     )
                 }
             }
@@ -162,8 +167,10 @@ fun SearchCard(
     rank: String,
     name: String,
     price: String,
-    discount: String
+    discount: String,
+    navController: NavController
 ){
+
     Box(
         modifier = Modifier
             // screen reader를 위해 텍스트를 한 묶음으로 처리
@@ -176,6 +183,7 @@ fun SearchCard(
                 start = 10.dp,
                 end = 10.dp,
             )
+            .clickable {navController.navigate("productInfo")}
     ){
         Image(
             painter = painterResource(R.drawable.home_rec),
