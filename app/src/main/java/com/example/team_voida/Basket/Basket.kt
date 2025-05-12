@@ -1,5 +1,6 @@
 package com.example.team_voida.Basket
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +47,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Notification.Notification
@@ -57,12 +63,35 @@ import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
 
 @Composable
-fun Basket(){
+fun Basket(
+    dynamicTotalPrice: MutableState<String>,
+    basketFlag: MutableState<Boolean>
+){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
 
-    cartNum.value = basketSample.size
 
+    ComposableLifecycle { source, event ->
+        if (event == Lifecycle.Event.ON_PAUSE) {
+            basketFlag.value = false
+            Log.e("123","on_pause")
+        } else if(event == Lifecycle.Event.ON_STOP){
+            basketFlag.value = false
+            Log.e("123","on_stop")
+        } else if(event == Lifecycle.Event.ON_DESTROY){
+            Log.e("123","on_destroy")
+        } else if(event == Lifecycle.Event.ON_CREATE){
+            Log.e("123","on_create")
+        } else if(event == Lifecycle.Event.ON_START){
+            basketFlag.value = true
+            Log.e("123","on_start")
+        } else if(event == Lifecycle.Event.ON_RESUME){
+            basketFlag.value = true
+            Log.e("123","on_resume")
+        }
+    }
+
+    cartNum.value = basketSample.size
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +102,10 @@ fun Basket(){
         Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
         BasketCartNum(cartNum)
         Spacer(Modifier.height(15.dp))
-        BasketItemArrange(basketSample)
+        BasketItemArrange(
+            basketSample,
+            dynamicTotalPrice
+        )
     }
 
 }
@@ -332,11 +364,10 @@ fun BasketItem(
 
 @Composable
 fun BasketItemArrange(
-    basketItems: List<BasketProduct>
+    basketItems: List<BasketProduct>,
+    dynamicTotalPrice: MutableState<String>
 ){
-    val scrollState = rememberScrollState()
     var totalPrice = 0
-    lateinit var totalPriceString: String
 
     Column(
         modifier = Modifier
@@ -354,17 +385,7 @@ fun BasketItemArrange(
                 price = item.price
             )
         }
-        totalPriceString = "%,d".format(totalPrice)
-    }
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ){
-        Column(
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ){
-            BasketPaymentButton(
-                price = totalPriceString)
-        }
+        dynamicTotalPrice.value = "%,d".format(totalPrice)
     }
 }
 
@@ -425,6 +446,22 @@ fun BasketPaymentButton(
                     fontSize = 16.sp
                 ),
             )
+        }
+    }
+}
+
+@Composable
+fun ComposableLifecycle(
+    lifeCycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    onEvent: (LifecycleOwner, Lifecycle.Event) -> Unit
+) {
+    DisposableEffect(lifeCycleOwner) {
+        val observer = LifecycleEventObserver { source, event ->
+            onEvent(source, event)
+        }
+        lifeCycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifeCycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }
