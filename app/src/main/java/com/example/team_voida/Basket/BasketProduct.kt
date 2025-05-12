@@ -13,41 +13,41 @@ val basketSample = listOf(
     img = "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/b5afa0d9-0d39-424a-b4aa-df14e290244e.jpg",
     name = "[Kurly's] 동물복지 백색 유정란 20구",
     option = "null",
-    price = "9,180원",
+    price = "9,180",
     num = 2
     ),
     BasketProduct(
         img = "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/b5afa0d9-0d39-424a-b4aa-df14e290244e.jpg",
         name = "[Kurly's] 동물복지 백색 유정란 20구",
         option = "null",
-        price = "9,180원",
+        price = "9,180",
         num = 2
     ),
     BasketProduct(
         img = "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/b5afa0d9-0d39-424a-b4aa-df14e290244e.jpg",
         name = "[Kurly's] 동물복지 백색 유정란 20구",
         option = "null",
-        price = "9,180원",
+        price = "9,180",
         num = 2
     ),
     BasketProduct(
         img = "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/b5afa0d9-0d39-424a-b4aa-df14e290244e.jpg",
         name = "[Kurly's] 동물복지 백색 유정란 20구",
         option = "null",
-        price = "9,180원",
+        price = "9,180",
         num = 2
     ),
     BasketProduct(
         img = "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/b5afa0d9-0d39-424a-b4aa-df14e290244e.jpg",
         name = "[Kurly's] 동물복지 백색 유정란 20구",
         option = "null",
-        price = "9,180원",
+        price = "9,180",
         num = 2
     ),BasketProduct(
         img = "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/b5afa0d9-0d39-424a-b4aa-df14e290244e.jpg",
         name = "[Kurly's] 동물복지 백색 유정란 20구",
         option = "null",
-        price = "9,180원",
+        price = "9,180",
         num = 2
     )
 )

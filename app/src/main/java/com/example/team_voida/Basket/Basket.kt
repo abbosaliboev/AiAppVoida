@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,10 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
@@ -47,15 +50,18 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.BasketPaymentColor
+import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.Selected
 import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
+import com.example.team_voida.ui.theme.TextWhite
 
 @Composable
 fun Basket(){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
 
+    cartNum.value = basketSample.size
 
     Column (
         modifier = Modifier
@@ -69,15 +75,14 @@ fun Basket(){
         Spacer(Modifier.height(15.dp))
         BasketItemArrange(basketSample)
     }
-    BasketPaymentButton(
-        price = "120,000 원"
-    )
+
 }
 
 @Composable
 fun BasketCartNum(
     cartNum: MutableState<Int>
 ){
+
     Row (
         modifier = Modifier
             .semantics(mergeDescendants = true){
@@ -251,7 +256,7 @@ fun BasketItem(
                         ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    text = price,
+                    text = price + "원",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
@@ -330,12 +335,17 @@ fun BasketItemArrange(
     basketItems: List<BasketProduct>
 ){
     val scrollState = rememberScrollState()
+    var totalPrice = 0
+    lateinit var totalPriceString: String
 
     Column(
         modifier = Modifier
             .fillMaxHeight()
     ){
         basketItems.forEachIndexed { index, item ->
+            val tmp = item.price.replace(",","")
+            val result = tmp.toInt()
+            totalPrice += result
             BasketItem(
                 img = item.img,
                 name = item.name,
@@ -343,6 +353,17 @@ fun BasketItemArrange(
                 num = item.num,
                 price = item.price
             )
+        }
+        totalPriceString = "%,d".format(totalPrice)
+    }
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ){
+        Column(
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ){
+            BasketPaymentButton(
+                price = totalPriceString)
         }
     }
 }
@@ -354,24 +375,56 @@ fun BasketPaymentButton(
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .fillMaxWidth()
             .background(
                 color = BasketPaymentColor
             )
+            .padding(
+                top = 15.dp,
+                bottom = 15.dp
+            )
+            .fillMaxWidth()
+
     ){
         Text(
             modifier = Modifier
-                .clip(
-                    shape = RoundedCornerShape(5.dp)
+                .padding(
+                    start = 30.dp,
+                    top = 10.5.dp
                 )
-                .height(30.dp)
                 ,
-            text = price,
+            text = "총액" + " " + price + "원",
             color = TextLittleDark,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_bold)),
                 fontSize = 16.sp
             ),
         )
+        Button(
+            modifier = Modifier
+                .padding(
+                    end =  20.dp
+                )
+                ,
+            shape = RoundedCornerShape(15.dp),
+            onClick = {},
+            colors = ButtonColors(
+                contentColor = ButtonBlue,
+                containerColor = ButtonBlue,
+                disabledContentColor = ButtonBlue,
+                disabledContainerColor = ButtonBlue
+            ),
+
+
+
+        ) {
+            Text(
+                text = "결제하기",
+                color = TextWhite,
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    fontSize = 16.sp
+                ),
+            )
+        }
     }
 }
