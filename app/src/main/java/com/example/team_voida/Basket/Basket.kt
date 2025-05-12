@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.ui.theme.BasketPaymentColor
 import com.example.team_voida.ui.theme.Selected
 import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
@@ -54,6 +55,7 @@ import com.example.team_voida.ui.theme.TextLittleDark
 fun Basket(){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
+
 
     Column (
         modifier = Modifier
@@ -65,14 +67,11 @@ fun Basket(){
         Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
         BasketCartNum(cartNum)
         Spacer(Modifier.height(15.dp))
-        BasketItem(
-            img = basketSample.img,
-            name = basketSample.name,
-            option = basketSample.option,
-            num = basketSample.num,
-            price = basketSample.price
-        )
+        BasketItemArrange(basketSample)
     }
+    BasketPaymentButton(
+        price = "120,000 원"
+    )
 }
 
 @Composable
@@ -186,9 +185,7 @@ fun BasketItem(
                         .fillMaxWidth()
                         .weight(1.5f)
                         .height(32.dp)
-                        .offset(
-                            y = -3.dp
-                        )
+
                     ,
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonColors(
@@ -207,9 +204,10 @@ fun BasketItem(
 //                            .height(30.dp)
                     )
                 }
+                Spacer(Modifier.width(10.dp))
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(20.dp))
 
             // price row
             Row (
@@ -235,7 +233,145 @@ fun BasketItem(
                     ),
                 )
             }
+            Spacer(Modifier.height(20.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .padding(
+                        end = 10.dp
+                    )
+            ){
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(9f)
+                        .offset(
+                            y = 5.dp
+                        ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    text = price,
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                        fontSize = 18.sp
+                    ),
+                )
+                Row (
+                    modifier = Modifier
+                ){
+                    Button(
+                        modifier = Modifier
+                            .size(30.dp),
+                        onClick = {},
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Transparent,
+                            disabledContentColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource( R.drawable.basket_sub),
+                            contentDescription = ""
+                        )
+                    }
+                    Spacer(Modifier.width(5.dp))
+                    Text(
+                        modifier = Modifier
+                            .clip(
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                            .background(
+                                color = Selected
+                            )
+                            .width(30.dp)
+                            .height(30.dp)
+                            .offset(
+                                y = 5.dp
+                            ),
+                        text = num.toString(),
+                        color = TextLittleDark,
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                            fontSize = 16.sp
+                        ),
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    Button(
+                        modifier = Modifier
+                            .size(30.dp),
+                        onClick = {},
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Transparent,
+                            disabledContentColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource( R.drawable.basket_add),
+                            contentDescription = ""
+                        )
+                    }
+                }
+            }
 
         }
+    }
+}
+
+@Composable
+fun BasketItemArrange(
+    basketItems: List<BasketProduct>
+){
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+    ){
+        basketItems.forEachIndexed { index, item ->
+            BasketItem(
+                img = item.img,
+                name = item.name,
+                option = item.option,
+                num = item.num,
+                price = item.price
+            )
+        }
+    }
+}
+
+@Composable
+fun BasketPaymentButton(
+    price: String
+){
+    Row (
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = BasketPaymentColor
+            )
+    ){
+        Text(
+            modifier = Modifier
+                .clip(
+                    shape = RoundedCornerShape(5.dp)
+                )
+                .height(30.dp)
+                ,
+            text = price,
+            color = TextLittleDark,
+            style = TextStyle(
+                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                fontSize = 16.sp
+            ),
+        )
     }
 }
