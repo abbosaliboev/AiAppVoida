@@ -32,6 +32,9 @@ import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
 import com.example.team_voida.Login.Login
+import com.example.team_voida.ProductInfo.ProductInfo
+import com.example.team_voida.ProductInfo.ProductInfoBottomBar
+import com.example.team_voida.ProductInfo.sampleProductInfoData
 import com.example.team_voida.R
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
@@ -71,6 +74,7 @@ fun HomeNav(){
     val basketController = rememberNavController()
     var selectedIndex by remember { mutableStateOf(0) }
     val basketFlag = remember { mutableStateOf(false) }
+    val homeNavFlag = remember { mutableStateOf(true)}
     val productFlag = remember{ mutableStateOf(false) }
     val dynamicTotalPrice = remember { mutableStateOf("") }
 
@@ -82,66 +86,71 @@ fun HomeNav(){
                 if(basketFlag.value){
                     BasketPaymentButton(dynamicTotalPrice.value)
                 }
-                NavigationBar(
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = Color.LightGray
-                        ),
-                    containerColor = Color.White
-                ){
-                    navItemList.forEachIndexed { index, item ->
-                        var tmpIndex = 0.dp
-                        if(index == selectedIndex){
-                            tmpIndex = 3.8.dp
-                            if(index == 1){
-                                tmpIndex = 4.dp
-                            }
-                        }
-
-                        NavigationBarItem(
-                            colors = NavigationBarItemColors(
-                                selectedIndicatorColor = Color.Transparent,
-                                selectedTextColor = Color.Transparent,
-                                selectedIconColor = Color.Transparent,
-                                unselectedIconColor = Color.Transparent,
-                                unselectedTextColor = Color.Transparent,
-                                disabledIconColor = Color.Transparent,
-                                disabledTextColor = Color.Transparent
+                if(productFlag.value){
+                    ProductInfoBottomBar(sampleProductInfoData.price)
+                }
+                if(homeNavFlag.value){
+                    NavigationBar(
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray
                             ),
-                            modifier = Modifier
-                                .height(30.dp)
-                                .offset(
-                                    y = tmpIndex
-                                )
-                            ,
-                            selected = selectedIndex == index,
-                            onClick = {
-                                selectedIndex = index
-                                if(selectedIndex == 0) navController.navigate("home")
-                                else if(selectedIndex == 3) navController.navigate("basket")
-                            },
-                            icon = {
-                                if(index == selectedIndex){
-                                    Column {
+                        containerColor = Color.White
+                    ){
+                        navItemList.forEachIndexed { index, item ->
+                            var tmpIndex = 0.dp
+                            if(index == selectedIndex){
+                                tmpIndex = 3.8.dp
+                                if(index == 1){
+                                    tmpIndex = 4.dp
+                                }
+                            }
+
+                            NavigationBarItem(
+                                colors = NavigationBarItemColors(
+                                    selectedIndicatorColor = Color.Transparent,
+                                    selectedTextColor = Color.Transparent,
+                                    selectedIconColor = Color.Transparent,
+                                    unselectedIconColor = Color.Transparent,
+                                    unselectedTextColor = Color.Transparent,
+                                    disabledIconColor = Color.Transparent,
+                                    disabledTextColor = Color.Transparent
+                                ),
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .offset(
+                                        y = tmpIndex
+                                    )
+                                ,
+                                selected = selectedIndex == index,
+                                onClick = {
+                                    selectedIndex = index
+                                    if(selectedIndex == 0) navController.navigate("home")
+                                    else if(selectedIndex == 3) navController.navigate("basket")
+                                },
+                                icon = {
+                                    if(index == selectedIndex){
+                                        Column {
+                                            Image(
+                                                modifier = Modifier
+                                                    .size(27.dp)
+                                                ,
+                                                painter = painterResource(item.selected),
+                                                contentDescription = item.notify
+                                            )
+                                        }
+                                    } else{
                                         Image(
                                             modifier = Modifier
-                                                .size(27.dp)
-                                            ,
-                                            painter = painterResource(item.selected),
+                                                .size(20.dp),
+                                            painter = painterResource(item.unSelected),
                                             contentDescription = item.notify
                                         )
                                     }
-                                } else{
-                                    Image(
-                                        modifier = Modifier
-                                            .size(20.dp),
-                                        painter = painterResource(item.unSelected),
-                                        contentDescription = item.notify
-                                    )
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -165,6 +174,14 @@ fun HomeNav(){
                 Basket(
                     dynamicTotalPrice,
                     basketFlag
+                )
+            }
+            composable("productInfo"){
+                ProductInfo(
+                    productInfoData = sampleProductInfoData,
+                    navController = navController,
+                    productFlag = productFlag,
+                    homeNavFlag = homeNavFlag
                 )
             }
         }

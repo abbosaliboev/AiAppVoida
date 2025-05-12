@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            HomeNav()
+            StartNav()
         }
     }
 }
