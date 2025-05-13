@@ -64,24 +64,26 @@ import kotlin.math.ceil
 @Composable
 fun Categories(
     navController: NavController,
-    homeNavFlag: MutableState<Boolean>
+    basketFlag: MutableState<Boolean>,
+    homeNavFlag: MutableState<Boolean>,
+    productFlag: MutableState<Boolean>
 ){
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
         } else if(event == Lifecycle.Event.ON_STOP){
-            homeNavFlag.value = true
             Log.e("123","on_stop")
         } else if(event == Lifecycle.Event.ON_DESTROY){
             Log.e("123","on_destroy")
         } else if(event == Lifecycle.Event.ON_CREATE){
             Log.e("123","on_create")
         } else if(event == Lifecycle.Event.ON_START){
-            Log.e("123","on_start")
+            basketFlag.value = false
             homeNavFlag.value = false
+            productFlag.value = false
+            Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")
-            homeNavFlag.value = false
         }
     }
 

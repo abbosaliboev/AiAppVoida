@@ -48,18 +48,16 @@ import com.example.team_voida.ui.theme.TextWhite
 fun ProductInfo(
     productInfoData: ProductInfoData,
     navController: NavController,
-    productFlag: MutableState<Boolean>,
-    homeNavFlag: MutableState<Boolean>
+    basketFlag: MutableState<Boolean>,
+    homeNavFlag: MutableState<Boolean>,
+    productFlag: MutableState<Boolean>
 ){
 
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
-            productFlag.value = false
-            homeNavFlag.value = true
             Log.e("123","on_pause")
         } else if(event == Lifecycle.Event.ON_STOP){
-            productFlag.value = false
-            homeNavFlag.value = true
+
             Log.e("123","on_stop")
         } else if(event == Lifecycle.Event.ON_DESTROY){
             Log.e("123","on_destroy")
@@ -67,12 +65,10 @@ fun ProductInfo(
             Log.e("123","on_create")
         } else if(event == Lifecycle.Event.ON_START){
             productFlag.value = true
+            basketFlag.value = false
             homeNavFlag.value = false
-            Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
-            productFlag.value = true
-            homeNavFlag.value = false
-            Log.e("123","on_resume")
+
         }
     }
 

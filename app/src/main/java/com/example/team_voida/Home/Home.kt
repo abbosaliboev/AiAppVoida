@@ -58,7 +58,10 @@ import kotlinx.coroutines.runBlocking
 fun Home(
     navController: NavController,
     input: MutableState<String>,
-    result: List<Popular>?
+    result: List<Popular>?,
+    basketFlag: MutableState<Boolean>,
+    homeNavFlag: MutableState<Boolean>,
+    productFlag: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
 
@@ -72,6 +75,9 @@ fun Home(
         } else if(event == Lifecycle.Event.ON_CREATE){
             Log.e("123","on_create")
         } else if(event == Lifecycle.Event.ON_START){
+            homeNavFlag.value = true
+            basketFlag.value = false
+            productFlag.value = false
             Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")

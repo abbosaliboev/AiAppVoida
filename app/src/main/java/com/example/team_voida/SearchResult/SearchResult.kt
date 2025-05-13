@@ -1,6 +1,7 @@
 package com.example.team_voida.SearchResult
 
 import android.app.appsearch.SearchResult
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,8 +39,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Home.HomeSearchBar
 import com.example.team_voida.Home.Popular
 import com.example.team_voida.Nav.navItemList
@@ -53,7 +56,29 @@ fun SearchResult(
     navController: NavController,
     input: MutableState<String>,
     productName: String,
+    basketFlag: MutableState<Boolean>,
+    homeNavFlag: MutableState<Boolean>,
+    productFlag: MutableState<Boolean>
 ){
+
+    ComposableLifecycle { source, event ->
+        if (event == Lifecycle.Event.ON_PAUSE) {
+            Log.e("123","on_pause")
+        } else if(event == Lifecycle.Event.ON_STOP){
+            Log.e("123","on_stop")
+        } else if(event == Lifecycle.Event.ON_DESTROY){
+            Log.e("123","on_destroy")
+        } else if(event == Lifecycle.Event.ON_CREATE){
+            Log.e("123","on_create")
+        } else if(event == Lifecycle.Event.ON_START){
+            Log.e("123","on_start")
+            homeNavFlag.value =true
+            basketFlag.value = false
+            productFlag.value = false
+        } else if(event == Lifecycle.Event.ON_RESUME){
+            Log.e("123","on_resume")
+        }
+    }
     val scrollState = rememberScrollState()
     Column (
         modifier = Modifier

@@ -292,42 +292,55 @@ fun HomeNav(){
                 Home(
                     navController = navController,
                     input = input,
-                    result = result
+                    result = result,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
                 )
             }
             composable("searchResult") {
                 SearchResult(
                     navController = navController,
                     input = input,
-                    productName = input.value
+                    productName = input.value,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
                 )
             }
             composable("basket") {
                 Basket(
                     dynamicTotalPrice,
-                    basketFlag,
-                    navController
+                    navController,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
                 )
             }
             composable("productInfo"){
                 ProductInfo(
                     productInfoData = sampleProductInfoData,
                     navController = navController,
-                    productFlag = productFlag,
-                    homeNavFlag = homeNavFlag
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
                 )
             }
             composable("categories"){
                 Categories(
                     navController = navController,
-                    homeNavFlag = homeNavFlag
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
                 )
             }
 
             composable("payment"){
                 Payment(
                     navController = navController,
-                    basketFlag = basketFlag
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
                 )
             }
         }
