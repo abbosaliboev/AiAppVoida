@@ -85,7 +85,7 @@ fun ProductInfo(
             .verticalScroll(scrollState)
 
     ){
-        Notification(productInfoData.name + " 상품 정보입니다. 아래에 AI가 요약한 상품 정보를 확인할 수 있습니다.  왼쪽 하단에 상품가격, 중앙 하단에 장바구니, 오른쪽 하단에 구매하기 버튼이 있습니다.")
+        Notification(productInfoData.name + " 상품 정보입니다. 아래에 AI가 요약한 상품 정보와 요약된 리뷰 정보를 확인할 수 있습니다.  왼쪽 하단에 상품가격, 중앙 하단에 장바구니, 오른쪽 하단에 구매하기 버튼이 있습니다.")
 
         // 상품 이미지
         Image(
@@ -94,7 +94,7 @@ fun ProductInfo(
             contentDescription = "상품 이미지 입니다. 아래에서 상품 정보를 확인해주세요."
         )
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(35.dp))
 
         Text(
             modifier = Modifier
@@ -132,7 +132,45 @@ fun ProductInfo(
             ),
             lineHeight = 30.sp
         )
-
+        Spacer(Modifier.height(35.dp))
+        Text(
+            modifier = Modifier
+                .padding(
+                    start = 18.dp
+                ),
+            text = "리뷰 정보",
+            color = TextLittleDark,
+            style = TextStyle(
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Font(R.font.pretendard_bold))
+            )
+        )
+        Spacer(Modifier.height(5.dp))
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(
+                    start = 20.dp,
+                    end = 20.dp
+                ),
+            color = Color.Black
+        )
+        Spacer(Modifier.height(5.dp))
+        Text(
+            modifier = Modifier
+                .padding(
+                    start = 18.dp,
+                    end = 18.dp
+                ),
+            text = productInfoData.review,
+            color = TextLittleDark,
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontFamily = FontFamily(Font(R.font.pretendard_regular))
+            ),
+            lineHeight = 30.sp
+        )
+        Spacer(Modifier.height(20.dp))
+        
 
     }
 }

@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.team_voida.Basket.Basket
 import com.example.team_voida.Basket.BasketPaymentButton
+import com.example.team_voida.Categories.Categories
 import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
@@ -47,14 +48,14 @@ val navItemList = listOf(
         notify = "홈 화면 이동 버튼"
     ),
     BottomNav(
-        unSelected = R.drawable.bottom_heart,
-        selected = R.drawable.bottom_sel_heart,
-        notify = "찜 화면 이동 버튼"
-    ),
-    BottomNav(
         unSelected = R.drawable.bottom_categories,
         selected = R.drawable.bottom_sel_categories,
         notify = "카테고리 화면 이동 버튼"
+    ),
+    BottomNav(
+        unSelected = R.drawable.bottom_heart,
+        selected = R.drawable.bottom_sel_heart,
+        notify = "찜 화면 이동 버튼"
     ),
     BottomNav(
         unSelected = R.drawable.bottom_cart,
@@ -127,6 +128,7 @@ fun HomeNav(){
                                 onClick = {
                                     selectedIndex = index
                                     if(selectedIndex == 0) navController.navigate("home")
+                                    else if(selectedIndex ==1) navController.navigate("categories")
                                     else if(selectedIndex == 3) navController.navigate("basket")
                                 },
                                 icon = {
@@ -181,6 +183,12 @@ fun HomeNav(){
                     productInfoData = sampleProductInfoData,
                     navController = navController,
                     productFlag = productFlag,
+                    homeNavFlag = homeNavFlag
+                )
+            }
+            composable("categories"){
+                Categories(
+                    navController = navController,
                     homeNavFlag = homeNavFlag
                 )
             }
