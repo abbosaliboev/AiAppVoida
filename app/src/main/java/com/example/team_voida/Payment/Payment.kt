@@ -3,7 +3,10 @@ package com.example.team_voida.Payment
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,7 +31,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
@@ -41,8 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Basket.BasketCartNum
 import com.example.team_voida.Basket.BasketItemArrange
+import com.example.team_voida.Basket.BasketProduct
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Basket.basketSample
 import com.example.team_voida.Categories.cateSports
@@ -51,6 +58,7 @@ import com.example.team_voida.R
 import com.example.team_voida.SearchResult.sampleSearchResult
 import com.example.team_voida.ui.theme.Selected
 import com.example.team_voida.ui.theme.TextLittleDark
+import com.example.team_voida.ui.theme.Unselected
 import com.example.team_voida.ui.theme.WishButton
 
 @Composable
@@ -61,6 +69,7 @@ fun Payment(
     productFlag: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
+    val tmpRegisteredPayMethod = remember { mutableListOf("신용카드", "모바일 페이", "계좌이체") }
 
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
@@ -112,6 +121,13 @@ fun Payment(
         PaymentContact()
         Spacer(Modifier.height(15.dp))
         PaymentNum(basketSample.size)
+        Spacer(Modifier.height(7.dp))
+        PaymentRow()
+        Spacer(Modifier.height(15.dp))
+        PaymentMethod()
+        Spacer(Modifier.height(5.dp))
+        PaymentMethodList(tmpRegisteredPayMethod)
+        Spacer(Modifier.height(20.dp))
     }
 }
 
@@ -332,5 +348,218 @@ fun PaymentNum(
                 fontFamily = FontFamily(Font(R.font.pretendard_bold)),
             )
         )
+    }
+}
+
+@Composable
+fun PaymentRow(){
+
+    // 임시 데이터 선언
+    val sampleData = basketSample
+
+    sampleData.forEachIndexed { index, item ->
+        Column {
+            Row(
+                modifier = Modifier
+                    .padding(
+                        start = 10.dp,
+                        end = 10.dp
+                    )
+                ,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Box(){
+                    Image(
+                        painter = rememberAsyncImagePainter(item.img),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(86.dp)
+                            .shadow(
+                                elevation = 5.dp,
+                                shape = CircleShape
+                            )
+                            .clip(CircleShape)
+
+                            .border(
+                                width = 5.dp,
+                                color = Color.White,
+                                shape = CircleShape
+                            )
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .offset(
+                                x = 60.dp,
+                                y = 11.dp
+                            )
+                    ){
+                        Text(
+                            modifier = Modifier
+                                .clip(shape = CircleShape)
+                                .background(
+                                    color = Selected
+                                )
+                                .width(30.dp)
+                                .height(30.dp)
+                                .border(
+                                    width = 3.dp,
+                                    color = Color.White,
+                                    shape = CircleShape
+                                )
+                                .offset(
+                                    y = 5.dp
+                                )
+                            ,
+                            textAlign = TextAlign.Center,
+                            text = item.num.toString(),
+                            color = TextLittleDark,
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                            )
+                        )
+                    }
+                }
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            start = 5.dp
+                        )
+                        .padding(13.dp)
+                        .weight(7f)
+                        .padding(top=10.dp)
+                    ,
+                    text = item.name,
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    )
+                )
+
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            start = 5.dp
+                        )
+                        .padding(13.dp)
+                        .weight(4f)
+                        .padding(top=17.dp)
+
+                    ,
+                    text = item.price + "원",
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                    )
+                )
+            }
+            Spacer(Modifier.height(5.dp))
+        }
+    }
+}
+
+@Composable
+fun PaymentMethod(){
+    Row (
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 20.dp,
+                end = 20.dp,
+                top = 20.dp
+            ),
+
+        ) {
+        Text(
+            modifier = Modifier,
+
+            textAlign = TextAlign.Center,
+            text = "Payment Method",
+            color = TextLittleDark,
+            style = TextStyle(
+                fontSize = 25.sp,
+                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+            )
+        )
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .size(30.dp)
+                .width(1.dp)
+                .offset(
+                    x = -10.dp,
+                )
+            ,
+            colors = ButtonColors(
+                containerColor = Color.Transparent,
+                contentColor = Color.Transparent,
+                disabledContentColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            ),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.payment_edit),
+                contentDescription = "",
+                modifier = Modifier
+
+            )
+        }
+    }
+}
+
+@Composable
+fun PaymentMethodList(
+    tmpRegisteredPayMethod: MutableList<String>
+){
+    val scrollState = rememberScrollState()
+    val selected = remember{ mutableStateOf(0) }
+    Row(
+        modifier = Modifier
+            .horizontalScroll(scrollState)
+            .padding(
+                start = 20.dp
+            )
+    ){
+        tmpRegisteredPayMethod.forEachIndexed { index, item ->
+            Button(
+                onClick = {
+                    selected.value = index
+                },
+                colors = if(selected.value == index){
+                    ButtonColors(
+                        contentColor = Selected,
+                        containerColor = Selected,
+                        disabledContentColor = Selected,
+                        disabledContainerColor = Selected
+                    )
+                } else {
+                    ButtonColors(
+                        containerColor = Unselected,
+                        contentColor = Unselected,
+                        disabledContainerColor = Unselected,
+                        disabledContentColor = Unselected
+                    )
+                }
+            ){
+                Text(
+                    modifier = Modifier,
+
+                    textAlign = TextAlign.Center,
+                    text = item,
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                    )
+                )
+            }
+            Spacer(Modifier.width(7.dp))
+        }
     }
 }

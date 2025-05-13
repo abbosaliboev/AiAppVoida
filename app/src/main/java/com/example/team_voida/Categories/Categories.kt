@@ -79,7 +79,7 @@ fun Categories(
             Log.e("123","on_create")
         } else if(event == Lifecycle.Event.ON_START){
             basketFlag.value = false
-            homeNavFlag.value = false
+            homeNavFlag.value = true
             productFlag.value = false
             Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
