@@ -1,6 +1,7 @@
 package com.example.team_voida.Categories
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,6 +47,7 @@ import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.ButtonBlue
+import com.example.team_voida.ui.theme.LightPink
 import com.example.team_voida.ui.theme.SkyBlue
 import com.example.team_voida.ui.theme.TextLittleDark
 import kotlin.math.ceil
@@ -149,6 +151,7 @@ fun CategoryColumn(
         categoryList.forEachIndexed { index, item ->
             CategoryRow(
                 item,
+                index
             )
             Spacer(Modifier.height(10.dp))
         }
@@ -158,6 +161,7 @@ fun CategoryColumn(
 @Composable
 fun CategoryRow(
     categoryItem: CategoryItem,
+    index: Int
 ){
     val isSelected = remember { mutableStateOf(false) }
     val buttonColor = remember { mutableStateOf(Color.White) }
@@ -174,25 +178,26 @@ fun CategoryRow(
                 disabledContainerColor = buttonColor.value
             ),
             onClick = {
-                isSelected.value = !isSelected.value
+                if(index in 0..4 || index == 8){
+                    isSelected.value = !isSelected.value
 
-                if(isSelected.value){
-                    buttonColor.value = SkyBlue
-                    buttonArrow.value = R.drawable.basket_up
-                    buttonShadow.value = ButtonBlue
-                } else{
-                    buttonColor.value = Color.White
-                    buttonArrow.value = R.drawable.basket_down
-                    buttonShadow.value = DefaultShadowColor
+                    if(isSelected.value){
+                        buttonColor.value = SkyBlue
+                        buttonArrow.value = R.drawable.basket_up
+                        buttonShadow.value = ButtonBlue
+                    } else{
+                        buttonColor.value = Color.White
+                        buttonArrow.value = R.drawable.basket_down
+                        buttonShadow.value = DefaultShadowColor
+                    }
                 }
-
             },
             shape = RoundedCornerShape(5.dp),
             modifier = Modifier
                 .shadow(
                     ambientColor = buttonShadow.value,
                     spotColor = buttonShadow.value,
-                    elevation = 10.dp
+                    elevation = 5.dp
                 )
 
         ){
@@ -236,49 +241,94 @@ fun CategoryRow(
                     )
 
                 }
-                Image(
-                    modifier = Modifier
-                        .padding(
-                            top = 30.dp,
-                            end = 15.dp
-                        )
-                        .fillMaxSize()
-                        .weight(1f)
-                        .size(8.dp)
-                    ,
-                    painter = painterResource(buttonArrow.value),
-                    contentDescription = "",
-                )
+
+                if(index in 0..4 || index == 8){
+                    Image(
+                        modifier = Modifier
+                            .padding(
+                                top = 30.dp,
+                                end = 15.dp
+                            )
+                            .fillMaxSize()
+                            .weight(1f)
+                            .size(8.dp)
+                        ,
+                        painter = painterResource(buttonArrow.value),
+                        contentDescription = "",
+                    )
+                }
             }
         }
         if(isSelected.value){
             if(categoryItem.subCategories != null){
-                var index = 0
                 val iterateNum = ceil(categoryItem.subCategories.size / 2.0) .toInt()
-                for(i in 0..iterateNum){
+                for(i in 0..iterateNum-1){
                     Row (
                         modifier = Modifier
                             .fillMaxWidth()
                     ){
                         Button(
+                            colors = ButtonColors(
+                                containerColor = Color.White,
+                                contentColor = Color.White,
+                                disabledContentColor = Color.White,
+                                disabledContainerColor = Color.White
+                            ),
                             onClick = {},
+                            shape = RoundedCornerShape(5.dp),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = LightPink
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth(
                                     if (i*2+1==categoryItem.subCategories.size) 0.5f
                                     else 1f
                                 )
                                 .weight(1f)
+                                .padding(5.dp)
                         ) {
-
+                            Text(
+                                textAlign = TextAlign.Center,
+                                text = categoryItem.subCategories[i*2],
+                                color = TextLittleDark,
+                                style = TextStyle(
+                                    fontSize = 14.5.sp,
+                                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                                )
+                            )
                         }
-                        if(i*2+1 <= categoryItem.subCategories.size){
+                        if(i*2+1 < categoryItem.subCategories.size){
                             Button(
+                                colors = ButtonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color.White,
+                                    disabledContentColor = Color.White,
+                                    disabledContainerColor = Color.White
+                                ),
                                 onClick = {},
+                                shape = RoundedCornerShape(5.dp),
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = LightPink
+                                ),
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .fillMaxWidth(
+                                        if (i*2+1==categoryItem.subCategories.size) 0.5f
+                                        else 1f
+                                    )
                                     .weight(1f)
+                                    .padding(5.dp)
                             ) {
-
+                                Text(
+                                    textAlign = TextAlign.Center,
+                                    text = categoryItem.subCategories[i*2+1],
+                                    color = TextLittleDark,
+                                    style = TextStyle(
+                                        fontSize = 14.5.sp,
+                                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                                    )
+                                )
                             }
                         } else {
 
