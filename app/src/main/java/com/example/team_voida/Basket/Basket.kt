@@ -65,7 +65,10 @@ import com.example.team_voida.ui.theme.TextWhite
 @Composable
 fun Basket(
     dynamicTotalPrice: MutableState<String>,
-    basketFlag: MutableState<Boolean>
+    navController: NavController,
+    basketFlag: MutableState<Boolean>,
+    homeNavFlag: MutableState<Boolean>,
+    productFlag: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
@@ -73,10 +76,8 @@ fun Basket(
 
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
-            basketFlag.value = false
             Log.e("123","on_pause")
         } else if(event == Lifecycle.Event.ON_STOP){
-            basketFlag.value = false
             Log.e("123","on_stop")
         } else if(event == Lifecycle.Event.ON_DESTROY){
             Log.e("123","on_destroy")
@@ -84,9 +85,10 @@ fun Basket(
             Log.e("123","on_create")
         } else if(event == Lifecycle.Event.ON_START){
             basketFlag.value = true
+            homeNavFlag.value = true
+            productFlag.value = false
             Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
-            basketFlag.value = true
             Log.e("123","on_resume")
         }
     }
@@ -391,7 +393,8 @@ fun BasketItemArrange(
 
 @Composable
 fun BasketPaymentButton(
-    price: String
+    price: String,
+    navController: NavController
 ){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -427,7 +430,9 @@ fun BasketPaymentButton(
                 )
                 ,
             shape = RoundedCornerShape(15.dp),
-            onClick = {},
+            onClick = {
+                navController.navigate("payment")
+            },
             colors = ButtonColors(
                 contentColor = ButtonBlue,
                 containerColor = ButtonBlue,

@@ -42,8 +42,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.SearchBar
@@ -55,18 +57,32 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Home(
     navController: NavController,
-    input: MutableState<String>
+    input: MutableState<String>,
+    result: List<Popular>?,
+    basketFlag: MutableState<Boolean>,
+    homeNavFlag: MutableState<Boolean>,
+    productFlag: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
-    var result: List<Popular>? = null
 
-    runBlocking {
-        val job = GlobalScope.launch {
-            result = HomePopularCall()
+    ComposableLifecycle { source, event ->
+        if (event == Lifecycle.Event.ON_PAUSE) {
+            Log.e("123","on_pause")
+        } else if(event == Lifecycle.Event.ON_STOP){
+            Log.e("123","on_stop")
+        } else if(event == Lifecycle.Event.ON_DESTROY){
+            Log.e("123","on_destroy")
+        } else if(event == Lifecycle.Event.ON_CREATE){
+            Log.e("123","on_create")
+        } else if(event == Lifecycle.Event.ON_START){
+            homeNavFlag.value = true
+            basketFlag.value = false
+            productFlag.value = false
+            Log.e("123","on_start")
+        } else if(event == Lifecycle.Event.ON_RESUME){
+            Log.e("123","on_resume")
         }
     }
-    Thread.sleep(1500L)
-
 
     // TODO
     // 임시로 result를 공통으로 사용
