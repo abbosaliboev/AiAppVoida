@@ -46,6 +46,7 @@ import com.example.team_voida.Home.Home
 import com.example.team_voida.Home.HomePopularCall
 import com.example.team_voida.Home.Popular
 import com.example.team_voida.Login.Login
+import com.example.team_voida.Payment.Payment
 import com.example.team_voida.ProductInfo.ProductInfo
 import com.example.team_voida.ProductInfo.ProductInfoBottomBar
 import com.example.team_voida.ProductInfo.sampleProductInfoData
@@ -131,7 +132,10 @@ fun HomeNav(){
         bottomBar = {
             Column {
                 if(basketFlag.value){
-                    BasketPaymentButton(dynamicTotalPrice.value)
+                    BasketPaymentButton(
+                        dynamicTotalPrice.value,
+                        navController
+                    )
                 }
                 if(productFlag.value){
                     ProductInfoBottomBar(sampleProductInfoData.price)
@@ -301,7 +305,8 @@ fun HomeNav(){
             composable("basket") {
                 Basket(
                     dynamicTotalPrice,
-                    basketFlag
+                    basketFlag,
+                    navController
                 )
             }
             composable("productInfo"){
@@ -316,6 +321,13 @@ fun HomeNav(){
                 Categories(
                     navController = navController,
                     homeNavFlag = homeNavFlag
+                )
+            }
+
+            composable("payment"){
+                Payment(
+                    navController = navController,
+                    basketFlag = basketFlag
                 )
             }
         }

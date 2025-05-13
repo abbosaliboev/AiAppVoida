@@ -65,7 +65,8 @@ import com.example.team_voida.ui.theme.TextWhite
 @Composable
 fun Basket(
     dynamicTotalPrice: MutableState<String>,
-    basketFlag: MutableState<Boolean>
+    basketFlag: MutableState<Boolean>,
+    navController: NavController
 ){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
@@ -391,7 +392,8 @@ fun BasketItemArrange(
 
 @Composable
 fun BasketPaymentButton(
-    price: String
+    price: String,
+    navController: NavController
 ){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -427,7 +429,9 @@ fun BasketPaymentButton(
                 )
                 ,
             shape = RoundedCornerShape(15.dp),
-            onClick = {},
+            onClick = {
+                navController.navigate("payment")
+            },
             colors = ButtonColors(
                 contentColor = ButtonBlue,
                 containerColor = ButtonBlue,
