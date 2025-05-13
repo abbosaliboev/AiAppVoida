@@ -32,6 +32,8 @@ import com.example.team_voida.Categories.Categories
 import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
+import com.example.team_voida.Home.HomePopularCall
+import com.example.team_voida.Home.Popular
 import com.example.team_voida.Login.Login
 import com.example.team_voida.ProductInfo.ProductInfo
 import com.example.team_voida.ProductInfo.ProductInfoBottomBar
@@ -40,6 +42,9 @@ import com.example.team_voida.R
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
 import com.example.team_voida.Start.Start
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 val navItemList = listOf(
     BottomNav(
@@ -78,6 +83,16 @@ fun HomeNav(){
     val homeNavFlag = remember { mutableStateOf(true)}
     val productFlag = remember{ mutableStateOf(false) }
     val dynamicTotalPrice = remember { mutableStateOf("") }
+
+    var result: List<Popular>? = null
+
+    runBlocking {
+        val job = GlobalScope.launch {
+            result = HomePopularCall()
+        }
+    }
+    Thread.sleep(1500L)
+
 
     val input = remember{ mutableStateOf("") }
 
@@ -162,7 +177,8 @@ fun HomeNav(){
             composable("home") {
                 Home(
                     navController = navController,
-                    input = input
+                    input = input,
+                    result = result
                 )
             }
             composable("searchResult") {

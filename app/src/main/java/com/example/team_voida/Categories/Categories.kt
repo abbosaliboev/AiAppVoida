@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,10 +23,14 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -40,7 +45,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.ui.theme.ButtonBlue
+import com.example.team_voida.ui.theme.SkyBlue
 import com.example.team_voida.ui.theme.TextLittleDark
+import kotlin.math.ceil
 
 
 //1. 식품
@@ -84,6 +92,8 @@ fun Categories(
 
     ){
         Notification("카테고리 페이지입니다. 아래에 목록에서 원하는 상품 목록을 선택해주세요.")
+        CategoryTitle()
+        Spacer(Modifier.height(20.dp))
         CategoryColumn(cateList)
     }
 }
@@ -92,7 +102,8 @@ fun Categories(
 fun CategoryTitle(){
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+        ,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         Text(
@@ -105,9 +116,20 @@ fun CategoryTitle(){
             text = "All Categories",
             color = TextLittleDark,
             style = TextStyle(
-                fontSize = 18.sp,
+                fontSize = 25.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
             )
+        )
+        Image(
+            painter = painterResource(R.drawable.basket_close),
+            contentDescription = "",
+            modifier = Modifier
+                .padding(
+                    end = 25.dp,
+                    top = 30.dp
+                    )
+                .size(15.dp)
+
         )
     }
 }
@@ -125,7 +147,9 @@ fun CategoryColumn(
             )
     ){
         categoryList.forEachIndexed { index, item ->
-            CategoryRow(item)
+            CategoryRow(
+                item,
+            )
             Spacer(Modifier.height(10.dp))
         }
         Spacer(Modifier.height(20.dp))
@@ -133,78 +157,137 @@ fun CategoryColumn(
 }
 @Composable
 fun CategoryRow(
-    categoryItem: CategoryItem
+    categoryItem: CategoryItem,
 ){
-    Button (
-        contentPadding = PaddingValues(0.dp),
-        colors = ButtonColors(
-            contentColor = Color.Transparent,
-            containerColor = Color.White,
-            disabledContentColor = Color.Transparent,
-            disabledContainerColor = Color.White
-        ),
-        onClick = {},
-        shape = RoundedCornerShape(5.dp),
-        modifier = Modifier
-            .shadow(
-                elevation = 10.dp
-            )
+    val isSelected = remember { mutableStateOf(false) }
+    val buttonColor = remember { mutableStateOf(Color.White) }
+    val buttonArrow = remember { mutableStateOf(R.drawable.basket_down) }
+    val buttonShadow = remember { mutableStateOf(DefaultShadowColor) }
 
-    ){
-        Row (
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween
+    Column {
+        Button (
+            contentPadding = PaddingValues(0.dp),
+            colors = ButtonColors(
+                contentColor = Color.Transparent,
+                containerColor = buttonColor.value,
+                disabledContentColor = Color.Transparent,
+                disabledContainerColor = buttonColor.value
+            ),
+            onClick = {
+                isSelected.value = !isSelected.value
+
+                if(isSelected.value){
+                    buttonColor.value = SkyBlue
+                    buttonArrow.value = R.drawable.basket_up
+                    buttonShadow.value = ButtonBlue
+                } else{
+                    buttonColor.value = Color.White
+                    buttonArrow.value = R.drawable.basket_down
+                    buttonShadow.value = DefaultShadowColor
+                }
+
+            },
+            shape = RoundedCornerShape(5.dp),
+            modifier = Modifier
+                .shadow(
+                    ambientColor = buttonShadow.value,
+                    spotColor = buttonShadow.value,
+                    elevation = 10.dp
+                )
+
         ){
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(9f)
+            Row (
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(9f)
+                ){
+                    Image(
+                        modifier = Modifier
+                            .size(
+                                width = 70.dp,
+                                height = 70.dp
+                            )
+                            .padding(
+                                top = 5.dp,
+                                bottom = 5.dp
+                            )
+                        ,
+                        painter = rememberAsyncImagePainter(categoryItem.img),
+                        contentDescription = ""
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                start = 10.dp,
+                                top = 23.dp
+                            ),
+                        textAlign = TextAlign.Center,
+                        text = categoryItem.name,
+                        color = TextLittleDark,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                        )
+                    )
+
+                }
                 Image(
                     modifier = Modifier
-                        .size(
-                            width = 70.dp,
-                            height = 70.dp
-                        )
                         .padding(
-                            top = 5.dp,
-                            bottom = 5.dp
+                            top = 30.dp,
+                            end = 15.dp
                         )
+                        .fillMaxSize()
+                        .weight(1f)
+                        .size(8.dp)
                     ,
-                    painter = rememberAsyncImagePainter(categoryItem.img),
-                    contentDescription = ""
+                    painter = painterResource(buttonArrow.value),
+                    contentDescription = "",
                 )
-
-                Text(
-                    modifier = Modifier
-                        .padding(
-                            start = 10.dp,
-                            top = 23.dp
-                        ),
-                    textAlign = TextAlign.Center,
-                    text = categoryItem.name,
-                    color = TextLittleDark,
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
-                    )
-                )
-
             }
-            Image(
-                modifier = Modifier
-                    .padding(
-                        top = 30.dp,
-                        end = 15.dp
-                    )
-                    .fillMaxSize()
-                    .weight(1f)
-                    .size(8.dp)
-                    ,
-                painter = painterResource(R.drawable.basket_down),
-                contentDescription = "",
-            )
+        }
+        if(isSelected.value){
+            if(categoryItem.subCategories != null){
+                var index = 0
+                val iterateNum = ceil(categoryItem.subCategories.size / 2.0) .toInt()
+                for(i in 0..iterateNum){
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ){
+                        Button(
+                            onClick = {},
+                            modifier = Modifier
+                                .fillMaxWidth(
+                                    if (i*2+1==categoryItem.subCategories.size) 0.5f
+                                    else 1f
+                                )
+                                .weight(1f)
+                        ) {
+
+                        }
+                        if(i*2+1 <= categoryItem.subCategories.size){
+                            Button(
+                                onClick = {},
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            ) {
+
+                            }
+                        } else {
+
+                        }
+                    }
+                }
+            }
         }
 
     }
+
 }

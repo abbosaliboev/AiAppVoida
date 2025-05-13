@@ -55,17 +55,11 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Home(
     navController: NavController,
-    input: MutableState<String>
+    input: MutableState<String>,
+    result: List<Popular>?
 ){
     val scrollState = rememberScrollState()
-    var result: List<Popular>? = null
 
-    runBlocking {
-        val job = GlobalScope.launch {
-            result = HomePopularCall()
-        }
-    }
-    Thread.sleep(1500L)
 
 
     // TODO
