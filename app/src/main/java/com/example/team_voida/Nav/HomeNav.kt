@@ -289,7 +289,7 @@ fun HomeNav(){
 
             ,
             navController = navController,
-            startDestination = "account"
+            startDestination = "home"
         ) {
             composable("home") {
                 Home(
