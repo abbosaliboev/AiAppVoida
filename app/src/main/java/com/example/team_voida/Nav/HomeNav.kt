@@ -50,6 +50,8 @@ import com.example.team_voida.Payment.Payment
 import com.example.team_voida.ProductInfo.ProductInfo
 import com.example.team_voida.ProductInfo.ProductInfoBottomBar
 import com.example.team_voida.ProductInfo.sampleProductInfoData
+import com.example.team_voida.Profile.Account
+import com.example.team_voida.Profile.Profile
 import com.example.team_voida.R
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
@@ -193,6 +195,7 @@ fun HomeNav(){
                                         }
                                     }
                                     else if(selectedIndex == 3) navController.navigate("basket")
+                                    else if(selectedIndex == 4) navController.navigate("profile")
                                 },
                                 icon = {
                                     if(index == selectedIndex){
@@ -286,7 +289,7 @@ fun HomeNav(){
 
             ,
             navController = navController,
-            startDestination = "home"
+            startDestination = "account"
         ) {
             composable("home") {
                 Home(
@@ -337,6 +340,24 @@ fun HomeNav(){
 
             composable("payment"){
                 Payment(
+                    navController = navController,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
+                )
+            }
+
+            composable("profile") {
+                Profile(
+                    navController = navController,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag
+                )
+            }
+
+            composable("account") {
+                Account(
                     navController = navController,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,

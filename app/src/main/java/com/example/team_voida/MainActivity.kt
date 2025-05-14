@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -19,7 +20,9 @@ import com.example.team_voida.Nav.HomeNav
 import com.example.team_voida.Nav.StartNav
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Start
+import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.Team_VoidaTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
 
@@ -30,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            StartNav()
+            HomeNav()
         }
     }
 }
