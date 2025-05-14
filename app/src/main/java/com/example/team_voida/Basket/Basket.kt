@@ -68,7 +68,9 @@ fun Basket(
     navController: NavController,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
+
 ){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
@@ -87,6 +89,8 @@ fun Basket(
             basketFlag.value = true
             homeNavFlag.value = true
             productFlag.value = false
+
+            selectedIndex.value =  3
             Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")

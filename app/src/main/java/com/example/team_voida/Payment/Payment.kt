@@ -66,7 +66,8 @@ fun Payment(
     navController: NavController,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
 ){
     val scrollState = rememberScrollState()
     val tmpRegisteredPayMethod = remember { mutableListOf("신용카드", "모바일 페이", "계좌이체") }
@@ -85,6 +86,8 @@ fun Payment(
             basketFlag.value = true
             homeNavFlag.value = true
             productFlag.value = false
+
+            selectedIndex.value = 3
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")
         }

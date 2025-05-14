@@ -61,7 +61,8 @@ fun Home(
     result: List<Popular>?,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
 ){
     val scrollState = rememberScrollState()
 
@@ -75,6 +76,7 @@ fun Home(
         } else if(event == Lifecycle.Event.ON_CREATE){
             Log.e("123","on_create")
         } else if(event == Lifecycle.Event.ON_START){
+            selectedIndex.value = 0
             homeNavFlag.value = true
             basketFlag.value = false
             productFlag.value = false

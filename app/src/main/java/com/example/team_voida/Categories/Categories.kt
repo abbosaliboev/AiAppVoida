@@ -66,7 +66,9 @@ fun Categories(
     navController: NavController,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
+
 ){
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
@@ -81,6 +83,8 @@ fun Categories(
             basketFlag.value = false
             homeNavFlag.value = true
             productFlag.value = false
+
+            selectedIndex.value = 1
             Log.e("123","on_start")
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")

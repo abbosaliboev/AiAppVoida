@@ -44,7 +44,9 @@ fun Profile(
     navController: NavController,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
+
 ){
 
     val scrollState = rememberScrollState()
@@ -63,6 +65,8 @@ fun Profile(
             basketFlag.value = false
             homeNavFlag.value = true
             productFlag.value = false
+
+            selectedIndex.value = 4
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")
         }
