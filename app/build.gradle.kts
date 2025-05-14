@@ -60,4 +60,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 }

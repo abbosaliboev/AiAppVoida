@@ -43,6 +43,7 @@ import com.example.team_voida.ui.theme.NotifyBlock
 import com.example.team_voida.ui.theme.SearchBarColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
+import kotlinx.coroutines.selects.select
 
 @Composable
 fun ProductInfo(
@@ -50,7 +51,8 @@ fun ProductInfo(
     navController: NavController,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
 ){
 
     ComposableLifecycle { source, event ->
@@ -67,6 +69,8 @@ fun ProductInfo(
             productFlag.value = true
             basketFlag.value = false
             homeNavFlag.value = false
+
+            selectedIndex.value = 0
         } else if(event == Lifecycle.Event.ON_RESUME){
 
         }

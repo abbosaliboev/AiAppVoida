@@ -50,6 +50,8 @@ import com.example.team_voida.Payment.Payment
 import com.example.team_voida.ProductInfo.ProductInfo
 import com.example.team_voida.ProductInfo.ProductInfoBottomBar
 import com.example.team_voida.ProductInfo.sampleProductInfoData
+import com.example.team_voida.Profile.Account
+import com.example.team_voida.Profile.Profile
 import com.example.team_voida.R
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
@@ -91,7 +93,7 @@ fun HomeNav(){
 
     val navController = rememberNavController() // home nav
     val basketController = rememberNavController()
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex = remember { mutableStateOf(0) }
     val basketFlag = remember { mutableStateOf(false) }
     val homeNavFlag = remember { mutableStateOf(true)}
     val productFlag = remember{ mutableStateOf(false) }
@@ -151,7 +153,7 @@ fun HomeNav(){
                     ){
                         navItemList.forEachIndexed { index, item ->
                             var tmpIndex = 0.dp
-                            if(index == selectedIndex){
+                            if(index == selectedIndex.value){
                                 tmpIndex = 3.8.dp
                                 if(index == 1){
                                     tmpIndex = 4.dp
@@ -175,12 +177,12 @@ fun HomeNav(){
                                          else 0.dp
                                     )
                                 ,
-                                selected = selectedIndex == index,
+                                selected = selectedIndex.value == index,
                                 onClick = {
-                                    selectedIndex = index
-                                    if(selectedIndex == 0) navController.navigate("home")
-                                    else if(selectedIndex ==1) navController.navigate("categories")
-                                    else if(selectedIndex ==2){
+                                    selectedIndex.value = index
+                                    if(selectedIndex.value == 0) navController.navigate("home")
+                                    else if(selectedIndex.value ==1) navController.navigate("categories")
+                                    else if(selectedIndex.value ==2){
                                         when(scale){
                                             1f -> scale = 2f
                                             2f -> scale = 3f
@@ -192,10 +194,11 @@ fun HomeNav(){
                                             }
                                         }
                                     }
-                                    else if(selectedIndex == 3) navController.navigate("basket")
+                                    else if(selectedIndex.value == 3) navController.navigate("basket")
+                                    else if(selectedIndex.value == 4) navController.navigate("profile")
                                 },
                                 icon = {
-                                    if(index == selectedIndex){
+                                    if(index == selectedIndex.value){
                                         Column {
                                             Image(
                                                 modifier = Modifier
@@ -286,7 +289,7 @@ fun HomeNav(){
 
             ,
             navController = navController,
-            startDestination = "home"
+            startDestination = "account"
         ) {
             composable("home") {
                 Home(
@@ -295,7 +298,8 @@ fun HomeNav(){
                     result = result,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
-                    productFlag = productFlag
+                    productFlag = productFlag,
+                    selectedIndex
                 )
             }
             composable("searchResult") {
@@ -305,7 +309,8 @@ fun HomeNav(){
                     productName = input.value,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
-                    productFlag = productFlag
+                    productFlag = productFlag,
+                    selectedIndex
                 )
             }
             composable("basket") {
@@ -314,7 +319,8 @@ fun HomeNav(){
                     navController,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
-                    productFlag = productFlag
+                    productFlag = productFlag,
+                    selectedIndex
                 )
             }
             composable("productInfo"){
@@ -323,7 +329,8 @@ fun HomeNav(){
                     navController = navController,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
-                    productFlag = productFlag
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex
                 )
             }
             composable("categories"){
@@ -331,7 +338,8 @@ fun HomeNav(){
                     navController = navController,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
-                    productFlag = productFlag
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex
                 )
             }
 
@@ -340,7 +348,28 @@ fun HomeNav(){
                     navController = navController,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
-                    productFlag = productFlag
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex
+                )
+            }
+
+            composable("profile") {
+                Profile(
+                    navController = navController,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex
+                )
+            }
+
+            composable("account") {
+                Account(
+                    navController = navController,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex
                 )
             }
         }

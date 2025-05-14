@@ -58,7 +58,8 @@ fun SearchResult(
     productName: String,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
-    productFlag: MutableState<Boolean>
+    productFlag: MutableState<Boolean>,
+    selectedIndex: MutableState<Int>
 ){
 
     ComposableLifecycle { source, event ->
@@ -75,6 +76,8 @@ fun SearchResult(
             homeNavFlag.value =true
             basketFlag.value = false
             productFlag.value = false
+            selectedIndex.value = 0
+
         } else if(event == Lifecycle.Event.ON_RESUME){
             Log.e("123","on_resume")
         }
