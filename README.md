@@ -1,5 +1,5 @@
 
-# Inclusive Shopping App for the Visually Impaired
+# Inclusive Shopping App for the Visually Impaired (English/Korean)
 
 ## 📱 Overview
 
