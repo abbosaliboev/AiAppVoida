@@ -54,6 +54,13 @@ This project aims to develop an Android shopping application tailored specifical
 - 📊 [Scrum Sheet](https://docs.google.com/spreadsheets/d/19OcmqpZHZYK2h3bqwkBScsr7RUosSOpt8s8sTrfmmuk/edit?usp=sharing)
 - 📂 Additional documents and Scrum meeting logs can be found in the `documentation` branch of this repository.
 
+## 📄 License
+
+This project is licensed under the MIT License.  
+You are free to use, modify, and distribute this software for personal or commercial purposes, as long as the original license and copyright notice are included.
+
+See the [LICENSE](./LICENSE) file for more details.
+
 
 ## 👨‍💻 Team Members
 
@@ -128,6 +135,13 @@ This project aims to develop an Android shopping application tailored specifical
 
 - 📊 [스크럼 시트 바로가기](https://docs.google.com/spreadsheets/d/19OcmqpZHZYK2h3bqwkBScsr7RUosSOpt8s8sTrfmmuk/edit?usp=sharing)
 - 📂 스크럼 회의록 및 기타 문서는 `documentation` 브랜치에서 확인하실 수 있습니다.
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스로 배포됩니다.  
+원 저작권 및 라이선스 고지를 포함하는 한, 개인 또는 상업적 목적으로 자유롭게 사용, 수정, 배포할 수 있습니다.
+
+자세한 내용은 [LICENSE](./LICENSE) 파일을 참고해주세요.
 
 ## 👨‍💻 팀원 소개
 
