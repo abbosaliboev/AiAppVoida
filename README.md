@@ -53,12 +53,18 @@ This project aims to develop an Android shopping application tailored specifical
 - Expand multi-language support
 - Optimize performance for slower devices
 
+## 📋 Scrum & Documentation
+
+- 📊 [Scrum Sheet](https://docs.google.com/spreadsheets/d/19OcmqpZHZYK2h3bqwkBScsr7RUosSOpt8s8sTrfmmuk/edit?usp=sharing)
+- 📂 Additional documents and Scrum meeting logs can be found in the `documentation` branch of this repository.
+
+
 ## 👨‍💻 Team Members
 
 | Name                    | Department            | Role       | Contact                      |
 |-------------------------|------------------------|------------|------------------------------|
 | Jiang Haozheng         | Software Engineering   | Backend  | jhz190402522@gmail.com       |
-| Abbos Aliboev           | Software Engineering   | UI/UX, FrontEnd | ali@chungbuk.ac.kr           |
+| Abbos Aliboev           | Software Engineering   | UI/UX, Frontend | ali@chungbuk.ac.kr           |
 | Namsraijalbuu Bilguun   | Software Engineering   | Backend | bekunee0@gmail.com           |
 | Kim Taeyoung            | Software Engineering   | Team Leader, Frontend| rlaxodud7737@naver.com       |
 
