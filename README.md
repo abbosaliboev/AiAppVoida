@@ -73,12 +73,6 @@ This project aims to develop an Android shopping application tailored specifical
 - Django 4.x
 - Git
 
-### Setup (Client)
-
-```bash
-git clone https://github.com/your-repo/shopping-accessibility-app.git
-cd android-client
-open with Android Studio
 
 # 시각 장애인을 위한 온라인 쇼핑 애플리케이션
 
