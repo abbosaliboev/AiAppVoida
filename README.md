@@ -1,6 +1,12 @@
 
 # Inclusive Shopping App for the Visually Impaired (English/Korean)
 
+<img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Jira_Logo.svg/2560px-Jira_Logo.svg.png" width = "120" heigth = "30">
+5월 22일 이후의 모든 문서 및 협업 관리는 <b>'Jira'</b>를 통해 이루어집니다.<br>
+Jira 계정이 없거나, Jira 팀 멤버로 초대받지 못한 경우 아래 사이트에 접속이 불가합니다.<br>
+Vodia의 Jira 사이트 접근을 원하시면 Jira 구글 계정을 만드신 후, <br>해당 계정의 이메일 주소를 rlaxodud7737@naver.com으로 보내주시길 바랍니다.<br>
+Vodia_Jira : https://hoogdle.atlassian.net/jira/software/projects/SCRUM/list<br>
+
 ## 📱 Overview
 
 This project aims to develop an Android shopping application tailored specifically for **visually impaired users**. Unlike most shopping apps that are designed for non-disabled individuals, our application integrates features and design elements that enhance accessibility through a simplified and screen reader–friendly interface.
