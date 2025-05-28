@@ -125,7 +125,7 @@ fun HomeNav(){
             result = HomePopularCall()
         }
     }
-    Thread.sleep(1500L)
+    Thread.sleep(3500L)
 
 
     val input = remember{ mutableStateOf("") }

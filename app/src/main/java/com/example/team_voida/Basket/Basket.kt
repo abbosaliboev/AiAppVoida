@@ -52,7 +52,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.BasketPaymentColor
@@ -182,8 +182,8 @@ fun BasketItem(
                 bottom = 10.dp
             )
     ){
-        Image(
-            painter = rememberAsyncImagePainter(img),
+        AsyncImage(
+            model = img,
             contentDescription = "",
             modifier = Modifier
                 .width(150.dp)

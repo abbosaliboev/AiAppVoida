@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
@@ -88,9 +88,9 @@ fun ProductInfo(
         Notification(productInfoData.name + " 상품 정보입니다. 아래에 AI가 요약한 상품 정보와 요약된 리뷰 정보를 확인할 수 있습니다.  왼쪽 하단에 상품가격, 중앙 하단에 장바구니, 오른쪽 하단에 구매하기 버튼이 있습니다.")
 
         // 상품 이미지
-        Image(
+        AsyncImage(
             modifier = Modifier.size(450.dp),
-            painter = rememberAsyncImagePainter(productInfoData.img),
+            model = productInfoData.img,
             contentDescription = "상품 이미지 입니다. 아래에서 상품 정보를 확인해주세요."
         )
 

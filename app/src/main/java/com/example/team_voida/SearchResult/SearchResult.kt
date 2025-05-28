@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Home.HomeSearchBar
 import com.example.team_voida.Home.Popular
@@ -137,19 +137,21 @@ fun SearchProducts(
                     val tmpResult1 = result!![realIndex*2]
                     val tmpResult2 = result!![realIndex*2+1]
                     SearchCard(
-                        img = tmpResult1.img,
-                        rank = tmpResult1.rank,
+                        id = tmpResult1.id,
+                        img = tmpResult1.image_url,
                         name = tmpResult1.name,
                         price = tmpResult1.price,
-                        discount = tmpResult1.discount,
+                        description = tmpResult1.description,
+                        category = tmpResult1.category,
                         navController = navController
                     )
                     SearchCard(
-                        img = tmpResult2.img,
-                        rank = tmpResult2.rank,
+                        id = tmpResult2.id,
+                        img = tmpResult2.image_url,
                         name = tmpResult2.name,
                         price = tmpResult2.price,
-                        discount = tmpResult2.discount,
+                        description = tmpResult2.description,
+                        category = tmpResult2.category,
                         navController = navController
                     )
                 }
@@ -191,11 +193,12 @@ fun SearchProducts(
 
 @Composable
 fun SearchCard(
+    id: Int,
     img: String,
-    rank: String,
+    description: String,
     name: String,
-    price: String,
-    discount: String,
+    price: Float,
+    category: String,
     navController: NavController
 ){
 
@@ -203,7 +206,7 @@ fun SearchCard(
         modifier = Modifier
             // screen reader를 위해 텍스트를 한 묶음으로 처리
             .semantics(mergeDescendants = true){
-                text = AnnotatedString(name + "상품 입니다." + discount + "할인되어 가격은" + price + "입니다.")
+                text = AnnotatedString(name + "상품 입니다." +"상품의 가격은" + price + "입니다.")
             }
             /////////////////////////
             .width(180.dp)
@@ -222,7 +225,7 @@ fun SearchCard(
             modifier = Modifier.fillMaxSize()
         ){
 
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .offset(
                         y = 10.dp
@@ -230,7 +233,7 @@ fun SearchCard(
                     .size(170.dp)
                     .clip(RoundedCornerShape(15.dp))
                 ,
-                painter = rememberAsyncImagePainter(img),
+                model = img,
                 contentDescription = name + "상품 이미지"
             )
             Column (
@@ -253,7 +256,7 @@ fun SearchCard(
                 Text(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    text = price,
+                    text = price.toString(),
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 14.sp,

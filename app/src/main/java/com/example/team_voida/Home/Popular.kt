@@ -4,9 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Popular(
-    val img: String,
-    val rank: String,
+    val id: Int,
     val name: String,
-    val price: String,
-    val discount: String
+    val description: String,
+    val price: Float,
+    val image_url: String,
+    val category: String
 )

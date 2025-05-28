@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
@@ -216,7 +216,7 @@ fun CategoryRow(
                         .fillMaxSize()
                         .weight(9f)
                 ){
-                    Image(
+                    AsyncImage(
                         modifier = Modifier
                             .size(
                                 width = 70.dp,
@@ -227,7 +227,7 @@ fun CategoryRow(
                                 bottom = 5.dp
                             )
                         ,
-                        painter = rememberAsyncImagePainter(categoryItem.img),
+                        model = categoryItem.img,
                         contentDescription = ""
                     )
 

@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
 import com.example.team_voida.Basket.BasketCartNum
 import com.example.team_voida.Basket.BasketItemArrange
 import com.example.team_voida.Basket.BasketProduct
@@ -372,8 +372,8 @@ fun PaymentRow(){
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
                 Box(){
-                    Image(
-                        painter = rememberAsyncImagePainter(item.img),
+                    AsyncImage(
+                        model = item.img,
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
