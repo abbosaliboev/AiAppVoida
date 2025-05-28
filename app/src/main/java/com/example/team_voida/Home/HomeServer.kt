@@ -6,9 +6,9 @@ import java.net.URL
 
 suspend fun HomePopularCall():List<Popular>?{
     try{
-        val url = URL(" https://fluent-marmoset-immensely.ngrok-free.app") // edit1
+        val url = URL(" https://fluent-marmoset-immensely.ngrok-free.app/Home") // edit1
         val connection = url.openConnection() as java.net.HttpURLConnection
-        connection.requestMethod = "POST" // edit2
+        connection.requestMethod = "GET" // edit2 // or POST
 
         if(connection.responseCode == HttpURLConnection.HTTP_OK){
             val inputStream = connection.inputStream.bufferedReader().use{it.readText()}

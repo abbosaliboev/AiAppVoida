@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
@@ -40,19 +43,29 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.imageLoader
+import coil3.network.httpHeaders
+import coil3.request.ImageRequest
+import coil3.util.DebugLogger
+
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.SearchBar
 import com.example.team_voida.ui.theme.TextLittleDark
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 @Composable
 fun Home(
@@ -65,7 +78,7 @@ fun Home(
     selectedIndex: MutableState<Int>
 ){
     val scrollState = rememberScrollState()
-
+    Log.e("zxz",result.toString())
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -88,7 +101,8 @@ fun Home(
 
     // TODO
     // 임시로 result를 공통으로 사용
-    
+
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -271,18 +285,20 @@ fun HomeProducts(
                     val tmpResult1 = result!![realIndex*2]
                     val tmpResult2 = result!![realIndex*2+1]
                     HomeCard(
-                        img = tmpResult1.img,
-                        rank = tmpResult1.rank,
+                        id = tmpResult1.id,
+                        img = tmpResult1.image_url,
                         name = tmpResult1.name,
                         price = tmpResult1.price,
-                        discount = tmpResult1.discount
+                        description = tmpResult1.description,
+                        category = tmpResult1.category
                     )
                     HomeCard(
-                        img = tmpResult2.img,
-                        rank = tmpResult2.rank,
+                        id = tmpResult2.id,
+                        img = tmpResult2.image_url,
                         name = tmpResult2.name,
                         price = tmpResult2.price,
-                        discount = tmpResult2.discount
+                        description = tmpResult2.description,
+                        category = tmpResult2.category
                     )
                 }
             }
@@ -323,19 +339,24 @@ fun HomeProducts(
 
 @Composable
 fun HomeCard(
+    id: Int,
     img: String,
-    rank: String,
+    description: String,
     name: String,
-    price: String,
-    discount: String
+    price: Float,
+    category: String
 ){
+    val imageLoader = LocalContext.current.imageLoader.newBuilder()
+        .logger(DebugLogger())
+        .build()
+
+
     Box(
         modifier = Modifier
-            // screen reader를 위해 텍스트를 한 묶음으로 처리
+            // ScreenReader를 위해 텍스트를 한 묶음으로 처리
             .semantics(mergeDescendants = true){
-                text = AnnotatedString(name + "상품 입니다." + discount + "할인되어 가격은" + price + "입니다.")
+                text = AnnotatedString(name + "상품 입니다." + "상품의 가격은" + price + "입니다.")
             }
-                /////////////////////////
             .width(180.dp)
             .padding(
                 start = 10.dp,
@@ -351,7 +372,10 @@ fun HomeCard(
             modifier = Modifier.fillMaxSize()
         ){
 
-            Image(
+            Log.e("zzz",img)
+
+            AsyncImage(
+                imageLoader = imageLoader,
                 modifier = Modifier
                     .offset(
                         y = 10.dp
@@ -359,9 +383,16 @@ fun HomeCard(
                     .size(170.dp)
                     .clip(RoundedCornerShape(15.dp))
                 ,
-                painter = rememberAsyncImagePainter(img),
+                model = ImageRequest
+                    .Builder(LocalContext.current)
+                    .data(
+                        if(img[0]=='\"'){img.substring(1,img.length-1)} else{img}
+                    )
+                    .build(),
                 contentDescription = name + "상품 이미지"
             )
+            Log.e("after    ","${name} : ${img}")
+
             Column (
                 modifier = Modifier.offset(
                     x = 12.dp,
@@ -372,17 +403,19 @@ fun HomeCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.width(140.dp),
-                    text = name,
+                    text = name.substring(1,name.length-1),
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 10.sp,
                         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
                     )
                 )
+    
+                val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(price)
                 Text(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    text = price,
+                    text = textPrice + "원",
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 14.sp,
