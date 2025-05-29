@@ -63,14 +63,12 @@ import kotlinx.coroutines.runBlocking
 
 @Composable
 fun CreateAccount(
+    email: MutableState<String>,
+    pw: MutableState<String>,
+    rePw: MutableState<String>,
+    cell: MutableState<String>,
     navController: NavController
 ){
-    val email = remember{ mutableStateOf("") }
-    val pw = remember{ mutableStateOf("") }
-    val rePw = remember{ mutableStateOf("") }
-    val cell = remember{ mutableStateOf("") }
-
-
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -297,10 +295,9 @@ fun CreateAccountPassWordField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccountContactField(
-    cell : MutableState<String>,
+    input : MutableState<String>,
     placeholder: String
 ){
-    val input = remember{ mutableStateOf("") }
 //    val spacedInput = remember { mutableStateOf("          "+input) }
     val interactionSource = remember{ MutableInteractionSource() }
 
@@ -413,27 +410,19 @@ fun CreateAccountButton(
             .clip(shape = RoundedCornerShape(15.dp))
             ,
         onClick = {
-
-
             if(pw.value != rePw.value){
                 Toast.makeText(context, "두 비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT).show()
             } else {
+                var tmp: Boolean? = false
 
-                var result: String? ="hi"
                 runBlocking {
                     val job = GlobalScope.launch {
-                        result = CreateAccountServer(
-                            email = email.value,
-                            pw = pw.value,
-                            cell = cell.value
-                        )
+                        tmp = CheckEmail(email.value)
                     }
                 }
-                Thread.sleep(1500L)
-                Log.e("xxx",result.toString())
-                if(result == "Email already registered"){
-                    Toast.makeText(context, "중복되는 이메일 입니다.",Toast.LENGTH_SHORT).show()
-                } else if(result == "User registered successfully"){
+                Thread.sleep(1000L)
+
+                if(tmp == true){
                     navController.navigate("naming")
                 }
             }

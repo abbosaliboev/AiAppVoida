@@ -1,5 +1,7 @@
 package com.example.team_voida.CreateAccount
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -43,11 +47,19 @@ import com.example.team_voida.ui.theme.LoginTextFiled
 import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun CreateAccountNaming(
+    email: String,
+    pw: String,
+    cell: String,
     navController: NavController
 ){
+    val un = remember{ mutableStateOf("") }
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -89,9 +101,14 @@ fun CreateAccountNaming(
             )
         )
         Spacer(Modifier.height(35.dp))
-        UserNameTextField("사용자 이름 입력")
+        UserNameTextField(un,"사용자 이름 입력")
         Spacer(Modifier.height(135.dp))
-        UserNameButton(navController)
+        UserNameButton(
+            email,
+            pw,
+            cell,
+            un,
+            navController)
         Spacer(Modifier.height(10.dp))
         Text(
             modifier = Modifier
@@ -111,9 +128,9 @@ fun CreateAccountNaming(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserNameTextField(
+    input: MutableState<String>,
     placeholder: String
 ){
-    val input = remember{ mutableStateOf("") }
     val interactionSource = remember{ MutableInteractionSource() }
 
     BasicTextField(
@@ -195,8 +212,14 @@ fun UserNameTextField(
 
 @Composable
 fun UserNameButton(
+    email: String,
+    pw: String,
+    cell: String,
+    un: MutableState<String>,
     navController: NavController
 ){
+    val context = LocalContext.current
+
     Button(
         shape = RectangleShape,
         modifier = Modifier
@@ -209,7 +232,32 @@ fun UserNameButton(
             .clip(shape = RoundedCornerShape(15.dp))
         ,
         onClick = {
-            navController.navigate("guide")
+
+            var check: String? = null
+            Log.e("zzz",email)
+            Log.e("zzz",pw)
+            Log.e("zzz",cell)
+            Log.e("zzz",un.value)
+
+            runBlocking {
+                val job = GlobalScope.launch {
+                    check = CreateAccountServer(
+                        email = email,
+                        pw = pw,
+                        cell = cell,
+                        un = un.value
+                    )
+                }
+            }
+            check?.let { Log.e("xxx", it.toString()) }
+
+            Thread.sleep(1000L)
+
+            if(true){
+                navController.navigate("guide")
+            } else{
+                Toast.makeText(context, "이미 존재하는 닉네임 입니다.", Toast.LENGTH_SHORT).show()
+            }
         },
         colors = ButtonColors(
             containerColor = ButtonBlue,
