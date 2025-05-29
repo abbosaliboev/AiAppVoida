@@ -23,6 +23,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,12 +44,14 @@ import com.example.team_voida.Categories.Categories
 import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
+import com.example.team_voida.Home.HomePartList
 import com.example.team_voida.Home.HomePopularCall
 import com.example.team_voida.Home.Popular
 import com.example.team_voida.Login.Login
 import com.example.team_voida.Payment.Payment
 import com.example.team_voida.ProductInfo.ProductInfo
 import com.example.team_voida.ProductInfo.ProductInfoBottomBar
+import com.example.team_voida.ProductInfo.ProductInfoInfo
 import com.example.team_voida.ProductInfo.sampleProductInfoData
 import com.example.team_voida.Profile.Account
 import com.example.team_voida.Profile.Profile
@@ -59,6 +62,9 @@ import com.example.team_voida.Start.Start
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 val navItemList = listOf(
     BottomNav(
@@ -98,10 +104,15 @@ fun HomeNav(){
     val homeNavFlag = remember { mutableStateOf(true)}
     val productFlag = remember{ mutableStateOf(false) }
     val dynamicTotalPrice = remember { mutableStateOf("") }
+    val isWhichPart = remember{ mutableStateOf(1) } // 실시간인기, 많이담는특가, ... 의 리스트를 구분하는 숫자
+    val productID = remember { mutableStateOf(0)}
+    val isItemWhichPart = remember{ mutableStateOf(0) }
 
     var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
+    val productInfoResult: MutableState<ProductInfoInfo?> = remember{ mutableStateOf<ProductInfoInfo?>(null) }
+
 
     val minScale = 1f
     val maxScale = 4f
@@ -140,7 +151,12 @@ fun HomeNav(){
                     )
                 }
                 if(productFlag.value){
-                    ProductInfoBottomBar(sampleProductInfoData.price)
+                    if(productInfoResult.value == null){
+                        ProductInfoBottomBar("0")
+                    } else {
+                        val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(productInfoResult.value!!.price)
+                        ProductInfoBottomBar(textPrice)
+                    }
                 }
                 if(homeNavFlag.value){
                     NavigationBar(
@@ -299,7 +315,10 @@ fun HomeNav(){
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
-                    selectedIndex
+                    selectedIndex = selectedIndex,
+                    isWhichPart = isWhichPart,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart
                 )
             }
             composable("searchResult") {
@@ -310,7 +329,9 @@ fun HomeNav(){
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
-                    selectedIndex
+                    selectedIndex = selectedIndex,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart
                 )
             }
             composable("basket") {
@@ -320,17 +341,21 @@ fun HomeNav(){
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
-                    selectedIndex
+                    selectedIndex = selectedIndex,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart
                 )
             }
             composable("productInfo"){
                 ProductInfo(
-                    productInfoData = sampleProductInfoData,
                     navController = navController,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
-                    selectedIndex = selectedIndex
+                    selectedIndex = selectedIndex,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart,
+                    productInfoResult
                 )
             }
             composable("categories"){
@@ -370,6 +395,17 @@ fun HomeNav(){
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
                     selectedIndex = selectedIndex
+                )
+            }
+            composable("partList") {
+                HomePartList(
+                    navController = navController,
+                    input = input,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex,
+                    isWhichPart = isWhichPart
                 )
             }
         }

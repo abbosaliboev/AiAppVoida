@@ -61,7 +61,9 @@ fun SearchResult(
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
     productFlag: MutableState<Boolean>,
-    selectedIndex: MutableState<Int>
+    selectedIndex: MutableState<Int>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>
 ){
 
     ComposableLifecycle { source, event ->
@@ -235,7 +237,7 @@ fun SearchCard(
                     .size(170.dp)
                     .clip(RoundedCornerShape(15.dp))
                 ,
-                model = img,
+                model = if(img[0]=='\"'){img.substring(1,img.length-1)} else{img},
                 contentDescription = name + "상품 이미지"
             )
             Column (
@@ -248,7 +250,7 @@ fun SearchCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.width(140.dp),
-                    text = name,
+                    text = name.substring(1,name.length-1),
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 10.sp,

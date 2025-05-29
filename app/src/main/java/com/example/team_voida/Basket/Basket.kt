@@ -69,7 +69,9 @@ fun Basket(
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
     productFlag: MutableState<Boolean>,
-    selectedIndex: MutableState<Int>
+    selectedIndex: MutableState<Int>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>
 
 ){
     val scrollState = rememberScrollState()

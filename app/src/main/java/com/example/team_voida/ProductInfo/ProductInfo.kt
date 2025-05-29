@@ -21,6 +21,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,6 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.team_voida.Basket.ComposableLifecycle
+import com.example.team_voida.CreateAccount.CheckEmail
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.ButtonBlackColor
@@ -43,16 +46,21 @@ import com.example.team_voida.ui.theme.NotifyBlock
 import com.example.team_voida.ui.theme.SearchBarColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 
 @Composable
 fun ProductInfo(
-    productInfoData: ProductInfoData,
     navController: NavController,
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
     productFlag: MutableState<Boolean>,
-    selectedIndex: MutableState<Int>
+    selectedIndex: MutableState<Int>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>,
+    result: MutableState<ProductInfoInfo?>
 ){
 
     ComposableLifecycle { source, event ->
@@ -61,6 +69,7 @@ fun ProductInfo(
         } else if(event == Lifecycle.Event.ON_STOP){
 
             Log.e("123","on_stop")
+
         } else if(event == Lifecycle.Event.ON_DESTROY){
             Log.e("123","on_destroy")
         } else if(event == Lifecycle.Event.ON_CREATE){
@@ -76,102 +85,137 @@ fun ProductInfo(
         }
     }
 
+
+    runBlocking {
+        Log.e("qqq",isItemWhichPart.value.toString())
+        val job = GlobalScope.launch {
+            when(isItemWhichPart.value){
+                0 -> result.value = ProductInfoServer(
+                    url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
+                    product_id = productID.value
+                )
+                1 -> result.value = ProductInfoServer(
+                    url = "https://fluent-marmoset-immensely.ngrok-free.app/PopularProductInfo",
+                    product_id = productID.value
+                )
+                2 -> result.value = ProductInfoServer(
+                    url = "https://fluent-marmoset-immensely.ngrok-free.app/BigSaleProductInfo",
+                    product_id = productID.value
+                )
+                3 -> result.value = ProductInfoServer(
+                    url = "https://fluent-marmoset-immensely.ngrok-free.app/TodaySaleProductInfo",
+                    product_id = productID.value
+                )
+                4 -> result.value = ProductInfoServer(
+                    url = "https://fluent-marmoset-immensely.ngrok-free.app/NewProductInfo",
+                    product_id = productID.value
+                )
+
+
+            }
+        }
+    }
+
     val scrollState = rememberScrollState()
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
-
-    ){
-        Notification(productInfoData.name + " 상품 정보입니다. 아래에 AI가 요약한 상품 정보와 요약된 리뷰 정보를 확인할 수 있습니다.  왼쪽 하단에 상품가격, 중앙 하단에 장바구니, 오른쪽 하단에 구매하기 버튼이 있습니다.")
-
-        // 상품 이미지
-        AsyncImage(
-            modifier = Modifier.size(450.dp),
-            model = productInfoData.img,
-            contentDescription = "상품 이미지 입니다. 아래에서 상품 정보를 확인해주세요."
-        )
-
-        Spacer(Modifier.height(35.dp))
-
-        Text(
+    if(result.value != null){
+        Column (
             modifier = Modifier
-                .padding(
-                    start = 18.dp
-                ),
-            text = "상품 정보",
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold))
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
+
+        ){
+            Notification(result.value!!.name + " 상품 정보입니다. 아래에 AI가 요약한 상품 정보와 요약된 리뷰 정보를 확인할 수 있습니다.  왼쪽 하단에 상품가격, 중앙 하단에 장바구니, 오른쪽 하단에 구매하기 버튼이 있습니다.")
+
+            // 상품 이미지
+            AsyncImage(
+                modifier = Modifier.size(450.dp),
+                model = if(result.value!!.image_url[0]=='\"'){
+                    result.value!!.image_url.substring(1, result.value!!.image_url.length-1)} else{
+                    result.value!!.image_url},
+                contentDescription = "상품 이미지 입니다. 아래에서 상품 정보를 확인해주세요."
             )
-        )
-        Spacer(Modifier.height(5.dp))
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(
-                    start = 20.dp,
-                    end = 20.dp
-                ),
-            color = Color.Black
-        )
-        Spacer(Modifier.height(5.dp))
-        Text(
-            modifier = Modifier
-                .padding(
-                    start = 18.dp,
-                    end = 18.dp
-                ),
-            text = productInfoData.detailedInfo,
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_regular))
-            ),
-            lineHeight = 30.sp
-        )
-        Spacer(Modifier.height(35.dp))
-        Text(
-            modifier = Modifier
-                .padding(
-                    start = 18.dp
-                ),
-            text = "리뷰 정보",
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold))
-            )
-        )
-        Spacer(Modifier.height(5.dp))
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(
-                    start = 20.dp,
-                    end = 20.dp
-                ),
-            color = Color.Black
-        )
-        Spacer(Modifier.height(5.dp))
-        Text(
-            modifier = Modifier
-                .padding(
-                    start = 18.dp,
-                    end = 18.dp
-                ),
-            text = productInfoData.review,
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_regular))
-            ),
-            lineHeight = 30.sp
-        )
-        Spacer(Modifier.height(20.dp))
-        
 
+            Spacer(Modifier.height(35.dp))
+
+            Text(
+                modifier = Modifier
+                    .padding(
+                        start = 18.dp
+                    ),
+                text = "상품 정보",
+                color = TextLittleDark,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_bold))
+                )
+            )
+            Spacer(Modifier.height(5.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                color = Color.Black
+            )
+            Spacer(Modifier.height(5.dp))
+            Text(
+                modifier = Modifier
+                    .padding(
+                        start = 18.dp,
+                        end = 18.dp
+                    ),
+                text = result.value!!.ai_info,
+                color = TextLittleDark,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular))
+                ),
+                lineHeight = 30.sp
+            )
+            Spacer(Modifier.height(35.dp))
+            Text(
+                modifier = Modifier
+                    .padding(
+                        start = 18.dp
+                    ),
+                text = "리뷰 정보",
+                color = TextLittleDark,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_bold))
+                )
+            )
+            Spacer(Modifier.height(5.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                color = Color.Black
+            )
+            Spacer(Modifier.height(5.dp))
+            Text(
+                modifier = Modifier
+                    .padding(
+                        start = 18.dp,
+                        end = 18.dp
+                    ),
+                text = result.value!!.ai_review,
+                color = TextLittleDark,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular))
+                ),
+                lineHeight = 30.sp
+            )
+            Spacer(Modifier.height(20.dp))
+
+
+        }
     }
 }
 
