@@ -116,38 +116,46 @@ fun Home(
             input
         )
         HomePopularRanking(navController)
-        HomeProducts(
-            result = result
-        )
+        if (result != null) {
+            HomeProducts(
+                result = result.slice(0..9)
+            )
+        }
 
         Notification("아래에 요즘 많이 담기는 특가 상품을 만나보세요!")
         HomeBar(
             navController = navController,
             title = "많이 담는 특가"
         )
-        HomeProducts(
-            result = result
+        if (result != null) {
+            HomeProducts(
+                result = result.slice(10..19)
 
-        )
+            )
+        }
 
         Notification("아래에 오늘 하루만 진행하는 특가 이벤트 상품을 만나보세요!")
         HomeBar(
             navController = navController,
             title = "하루 특가"
         )
-        HomeProducts(
-            result = result
+        if (result != null) {
+            HomeProducts(
+                result = result.slice(20..29)
 
-        )
+            )
+        }
 
         Notification("아래에 요즘 뜨고 있는 인기 신상품을 만나보세요!")
         HomeBar(
             navController = navController,
             title = "인기 신상품"
         )
-        HomeProducts(
-            result = result
-        )
+        if (result != null) {
+            HomeProducts(
+                result = result.slice(30..39)
+            )
+        }
         Spacer(Modifier.height(45.dp))
     }
 }

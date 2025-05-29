@@ -1,6 +1,8 @@
 package com.example.team_voida.CreateAccount
 
 import android.graphics.Paint.Align
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,18 +47,30 @@ import com.example.team_voida.ui.theme.LoginTextFiled
 import com.example.team_voida.ui.theme.TextColor
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.navigation.NavController
+import com.example.team_voida.Home.HomePopularCall
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun CreateAccount(
     navController: NavController
 ){
+    val email = remember{ mutableStateOf("") }
+    val pw = remember{ mutableStateOf("") }
+    val rePw = remember{ mutableStateOf("") }
+    val cell = remember{ mutableStateOf("") }
+
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -77,15 +91,21 @@ fun CreateAccount(
             )
         )
         Spacer(Modifier.height(45.dp))
-        CreateAccountTextField("이메일 주소")
+        CreateAccountTextField(email,"이메일 주소")
         Spacer(Modifier.height(10.dp))
-        CreateAccountPassWordField("비밀번호 입력")
+        CreateAccountPassWordField(pw,"비밀번호 입력")
         Spacer(Modifier.height(10.dp))
-        CreateAccountPassWordField("비밀번호 재입력")
+        CreateAccountPassWordField(rePw,"비밀번호 재입력")
         Spacer(Modifier.height(10.dp))
-        CreateAccountContactField("전화번호 입력")
+        CreateAccountContactField(cell,"전화번호 입력")
         Spacer(Modifier.height(85.dp))
-        CreateAccountButton(navController)
+        CreateAccountButton(
+            email = email,
+            pw = pw,
+            rePw = rePw,
+             cell = cell,
+            navController
+        )
         Spacer(Modifier.height(15.dp))
 
         Text(
@@ -108,9 +128,9 @@ fun CreateAccount(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccountTextField(
+    email: MutableState<String>,
     placeholder: String
 ){
-    val input = remember{ mutableStateOf("") }
     val interactionSource = remember{ MutableInteractionSource() }
 
     BasicTextField(
@@ -123,9 +143,9 @@ fun CreateAccountTextField(
             // 선택된 페이지에 관한 데이터는 이 함수의 input 변수를 활용
             onDone = {}
         ),
-        value = input.value,
+        value = email.value,
         onValueChange = {
-            input.value = it
+            email.value = it
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -164,7 +184,7 @@ fun CreateAccountTextField(
                 visualTransformation = VisualTransformation.None,
                 enabled = true,
                 innerTextField = innerTextField,
-                value = input.value.toString(),
+                value = email.value.toString(),
                 interactionSource = interactionSource,
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = TextColor,
@@ -185,9 +205,9 @@ fun CreateAccountTextField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccountPassWordField(
+    pw: MutableState<String>,
     placeholder: String
 ){
-    val input = remember{ mutableStateOf("") }
     val interactionSource = remember{ MutableInteractionSource() }
 
     Box{
@@ -202,9 +222,9 @@ fun CreateAccountPassWordField(
                 // 선택된 페이지에 관한 데이터는 이 함수의 input 변수를 활용
                 onDone = {}
             ),
-            value = input.value,
+            value = pw.value,
             onValueChange = {
-                input.value = it
+                pw.value = it
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -243,7 +263,7 @@ fun CreateAccountPassWordField(
                     visualTransformation = VisualTransformation.None,
                     enabled = true,
                     innerTextField = innerTextField,
-                    value = input.value.toString(),
+                    value = pw.value.toString(),
                     interactionSource = interactionSource,
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = TextColor,
@@ -277,6 +297,7 @@ fun CreateAccountPassWordField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccountContactField(
+    cell : MutableState<String>,
     placeholder: String
 ){
     val input = remember{ mutableStateOf("") }
@@ -370,10 +391,16 @@ fun CreateAccountContactField(
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CreateAccountButton(
+    email: MutableState<String>,
+    pw: MutableState<String>,
+    rePw: MutableState<String>,
+    cell: MutableState<String>,
     navController: NavController
 ){
+    val context = LocalContext.current
     Button(
         shape = RectangleShape,
         modifier = Modifier
@@ -386,7 +413,30 @@ fun CreateAccountButton(
             .clip(shape = RoundedCornerShape(15.dp))
             ,
         onClick = {
-            navController.navigate("naming")
+
+
+            if(pw.value != rePw.value){
+                Toast.makeText(context, "두 비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT).show()
+            } else {
+
+                var result: String? ="hi"
+                runBlocking {
+                    val job = GlobalScope.launch {
+                        result = CreateAccountServer(
+                            email = email.value,
+                            pw = pw.value,
+                            cell = cell.value
+                        )
+                    }
+                }
+                Thread.sleep(1500L)
+                Log.e("xxx",result.toString())
+                if(result == "Email already registered"){
+                    Toast.makeText(context, "중복되는 이메일 입니다.",Toast.LENGTH_SHORT).show()
+                } else if(result == "User registered successfully"){
+                    navController.navigate("naming")
+                }
+            }
         },
         colors = ButtonColors(
             containerColor = ButtonBlue,

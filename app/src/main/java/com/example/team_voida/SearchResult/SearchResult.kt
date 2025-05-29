@@ -48,7 +48,9 @@ import com.example.team_voida.Home.Popular
 import com.example.team_voida.Nav.navItemList
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
-
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 
 @Composable
@@ -253,10 +255,12 @@ fun SearchCard(
                         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
                     )
                 )
+
+                val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(price)
                 Text(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    text = price.toString(),
+                    text = textPrice+"원",
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 14.sp,
