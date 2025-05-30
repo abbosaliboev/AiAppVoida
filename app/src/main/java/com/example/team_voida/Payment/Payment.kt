@@ -54,12 +54,21 @@ import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Basket.basketSample
 import com.example.team_voida.Categories.cateSports
 import com.example.team_voida.Notification.Notification
+import com.example.team_voida.ProductInfo.Loader
 import com.example.team_voida.R
 import com.example.team_voida.SearchResult.sampleSearchResult
+import com.example.team_voida.Tools.LoaderSet
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.Selected
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.Unselected
 import com.example.team_voida.ui.theme.WishButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 @Composable
 fun Payment(
@@ -67,11 +76,15 @@ fun Payment(
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
     productFlag: MutableState<Boolean>,
-    selectedIndex: MutableState<Int>
+    selectedIndex: MutableState<Int>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>,
+    isPayOne: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
     val tmpRegisteredPayMethod = remember { mutableListOf("신용카드", "모바일 페이", "계좌이체") }
 
+    val paymentInfo:MutableState<PaymentInfo?> = remember { mutableStateOf<PaymentInfo?>(null) }
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -93,45 +106,79 @@ fun Payment(
         }
     }
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
 
-    ){
-        Notification("결제 화면입니다. 아래에 설정된 배송지, 연락처를 확인해주세요. 결제되는 상품들을 확인하시고 화면 우측 하단에 '결제하기' 버튼을 눌러주세요..")
+    runBlocking {
+        val job = GlobalScope.launch {
+            if(isPayOne.value){
+                paymentInfo.value = PaymentServerOne(
+                    action = when (isItemWhichPart.value) {
+                        1 -> "/Popular"
+                        2 -> "/BigSale"
+                        3 -> "/TodaySale"
+                        4 -> "/New"
+                        else -> ""
+                    },
+                    session_id = session.sessionId.value,
+                    product_id = productID.value
+                )
+            } else {
+                paymentInfo.value = PaymentServerMultiple(
+                    session_id = session.sessionId.value
+                )
+            }
 
-        // Payment
-        Text(
-            modifier = Modifier
-                .padding(
-                    start = 22.dp
-                ),
-            textAlign = TextAlign.Center,
-            text = "Payment",
-            color = TextLittleDark,
-            style = TextStyle(
-                fontSize = 25.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-            )
-        )
-
-        Spacer(Modifier.height(15.dp))
-
-        PaymentAddress()
-        Spacer(Modifier.height(7.dp))
-        PaymentContact()
-        Spacer(Modifier.height(15.dp))
-        PaymentNum(basketSample.size)
-        Spacer(Modifier.height(7.dp))
-        PaymentRow()
-        Spacer(Modifier.height(15.dp))
-        PaymentMethod()
-        Spacer(Modifier.height(5.dp))
-        PaymentMethodList(tmpRegisteredPayMethod)
-        Spacer(Modifier.height(20.dp))
+        }
     }
+
+    if(paymentInfo.value != null){
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
+
+        ){
+            Notification("결제 화면입니다. 아래에 설정된 배송지, 연락처를 확인해주세요. 결제되는 상품들을 확인하시고 화면 우측 하단에 '결제하기' 버튼을 눌러주세요..")
+
+            // Payment
+            Text(
+                modifier = Modifier
+                    .padding(
+                        start = 22.dp
+                    ),
+                textAlign = TextAlign.Center,
+                text = "Payment",
+                color = TextLittleDark,
+                style = TextStyle(
+                    fontSize = 25.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                )
+            )
+
+            Spacer(Modifier.height(15.dp))
+
+            PaymentAddress()
+            Spacer(Modifier.height(7.dp))
+            PaymentContact()
+            Spacer(Modifier.height(15.dp))
+
+            var num = 0
+            paymentInfo.value!!.item.forEach { item ->
+                num += item.number
+            }
+            PaymentNum(num)
+            Spacer(Modifier.height(7.dp))
+            PaymentRow(paymentInfo)
+            Spacer(Modifier.height(15.dp))
+            PaymentMethod()
+            Spacer(Modifier.height(5.dp))
+            PaymentMethodList(tmpRegisteredPayMethod)
+            Spacer(Modifier.height(20.dp))
+        }
+    } else{
+        LoaderSet()
+    }
+
 }
 
 @Composable
@@ -157,7 +204,7 @@ fun PaymentAddress(){
                 .padding(
                     start = 13.dp,
                     top = 13.dp,
-                    end =  13.dp
+                    end = 13.dp
                 )
             ,
             textAlign = TextAlign.Center,
@@ -242,7 +289,7 @@ fun PaymentContact(){
                 .padding(
                     start = 13.dp,
                     top = 13.dp,
-                    end =  13.dp
+                    end = 13.dp
                 )
             ,
             textAlign = TextAlign.Center,
@@ -312,7 +359,7 @@ fun PaymentNum(
 
     Row (
         modifier = Modifier
-            .semantics(mergeDescendants = true){
+            .semantics(mergeDescendants = true) {
                 text = AnnotatedString("현재 결제 목록에는 ${cartNum} 개의 상품이 존재합니다.")
             }
             .fillMaxWidth()
@@ -355,12 +402,12 @@ fun PaymentNum(
 }
 
 @Composable
-fun PaymentRow(){
+fun PaymentRow(
+    paymentInfo: MutableState<PaymentInfo?>
+){
 
-    // 임시 데이터 선언
-    val sampleData = basketSample
 
-    sampleData.forEachIndexed { index, item ->
+    paymentInfo.value?.item?.forEachIndexed { index, item ->
         Column {
             Row(
                 modifier = Modifier
@@ -373,7 +420,7 @@ fun PaymentRow(){
             ){
                 Box(){
                     AsyncImage(
-                        model = item.img,
+                        model = if(item.img[0]=='\"'){item.img.substring(1,item.img.length-1)} else{item.img},
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -416,7 +463,7 @@ fun PaymentRow(){
                                 )
                             ,
                             textAlign = TextAlign.Center,
-                            text = item.num.toString(),
+                            text = item.number.toString(),
                             color = TextLittleDark,
                             style = TextStyle(
                                 fontSize = 15.sp,
@@ -432,7 +479,7 @@ fun PaymentRow(){
                         )
                         .padding(13.dp)
                         .weight(7f)
-                        .padding(top=10.dp)
+                        .padding(top = 10.dp)
                     ,
                     text = item.name,
                     color = TextLittleDark,
@@ -442,6 +489,8 @@ fun PaymentRow(){
                     )
                 )
 
+                val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(item.price)
+
                 Text(
                     modifier = Modifier
                         .padding(
@@ -449,10 +498,10 @@ fun PaymentRow(){
                         )
                         .padding(13.dp)
                         .weight(4f)
-                        .padding(top=17.dp)
+                        .padding(top = 17.dp)
 
                     ,
-                    text = item.price + "원",
+                    text = textPrice + "원",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontSize = 16.sp,

@@ -456,6 +456,7 @@ fun BasketItemArrange(
 @Composable
 fun BasketPaymentButton(
     price: String,
+    isPayOne: MutableState<Boolean>,
     navController: NavController
 ){
     Row (
@@ -493,6 +494,7 @@ fun BasketPaymentButton(
                 ,
             shape = RoundedCornerShape(15.dp),
             onClick = {
+                isPayOne.value = false
                 navController.navigate("payment")
             },
             colors = ButtonColors(
@@ -501,8 +503,6 @@ fun BasketPaymentButton(
                 disabledContentColor = ButtonBlue,
                 disabledContainerColor = ButtonBlue
             ),
-
-
 
         ) {
             Text(

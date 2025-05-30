@@ -111,6 +111,7 @@ fun HomeNav(){
     val isItemWhichPart = remember{ mutableStateOf(0) }
     val price = remember { mutableStateOf(0f) }
     val categoryCode = remember{ mutableStateOf("") }
+    val isPayOne = remember { mutableStateOf(true) } // 단일 결제, 다수 결제 구분
 
     var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
@@ -149,6 +150,7 @@ fun HomeNav(){
                 if(basketFlag.value){
                     BasketPaymentButton(
                         dynamicTotalPrice.value,
+                        isPayOne,
                         navController
                     )
                 }
@@ -157,7 +159,9 @@ fun HomeNav(){
                     ProductInfoBottomBar(
                         textPrice,
                         productID,
-                        isItemWhichPart
+                        isItemWhichPart,
+                        navController,
+                        isPayOne
                     )
                 }
                 if(homeNavFlag.value){
@@ -377,7 +381,10 @@ fun HomeNav(){
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
-                    selectedIndex = selectedIndex
+                    selectedIndex = selectedIndex,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart,
+                    isPayOne = isPayOne
                 )
             }
 

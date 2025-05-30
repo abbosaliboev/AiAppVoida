@@ -60,6 +60,7 @@ import com.example.team_voida.Basket.BasketInsert
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.CreateAccount.CheckEmail
 import com.example.team_voida.Notification.Notification
+import com.example.team_voida.Payment.PaymentServerOne
 import com.example.team_voida.R
 import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlackColor
@@ -258,7 +259,9 @@ fun ProductInfo(
 fun ProductInfoBottomBar(
     price: String,
     productID: MutableState<Int>,
-    isItemWhichPart: MutableState<Int>
+    isItemWhichPart: MutableState<Int>,
+    navController: NavController,
+    isPayOne: MutableState<Boolean>
 ){
     Row (
         modifier = Modifier
@@ -341,7 +344,10 @@ fun ProductInfoBottomBar(
                 disabledContentColor = ButtonBlue,
                 disabledContainerColor = ButtonBlue
             ),
-            onClick = {},
+            onClick = {
+                isPayOne.value = true
+                navController.navigate("payment")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
