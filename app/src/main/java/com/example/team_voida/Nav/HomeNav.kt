@@ -154,7 +154,11 @@ fun HomeNav(){
                 }
                 if(productFlag.value){
                     val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(price.value)
-                    ProductInfoBottomBar(textPrice)
+                    ProductInfoBottomBar(
+                        textPrice,
+                        productID,
+                        isItemWhichPart
+                    )
                 }
                 if(homeNavFlag.value){
                     NavigationBar(

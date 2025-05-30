@@ -56,10 +56,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.example.team_voida.Basket.BasketInsert
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.CreateAccount.CheckEmail
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlackColor
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.IconBlue
@@ -254,7 +256,9 @@ fun ProductInfo(
 
 @Composable
 fun ProductInfoBottomBar(
-    price: String
+    price: String,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>
 ){
     Row (
         modifier = Modifier
@@ -290,7 +294,28 @@ fun ProductInfoBottomBar(
                 disabledContentColor = ButtonBlackColor,
                 disabledContainerColor = ButtonBlackColor
             ),
-            onClick = {},
+            onClick = {
+                runBlocking {
+                    val job = GlobalScope.launch {
+                        BasketInsert(
+                            action = when(isItemWhichPart.value){
+                                0 -> "BasketInsert"
+                                1 -> "/BasketInsert/Popular"
+                                2 -> "/BasketInsert/Popular"
+                                3 -> "/BasketInsert/TodaySale"
+                                4 -> "/BasketInsert/New"
+                                else -> ""
+                            },
+                            session_id = session.sessionId.value,
+                            product_id = productID.value
+                        )
+                    }
+                    Log.e("value", "product id : " +productID.value.toString())
+                    Log.e("value", "iswhich id : " +isItemWhichPart.value.toString())
+
+                }
+
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)

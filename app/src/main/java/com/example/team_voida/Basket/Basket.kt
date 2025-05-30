@@ -120,13 +120,18 @@ fun Basket(
                 .verticalScroll(scrollState)
 
         ){
-            cartNum.value = basketInfo.value!!.size
+            var tmp = 0;
+            basketInfo.value!!.forEach { item ->
+                tmp += item.number
+            }
+            cartNum.value = tmp
             Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
             BasketCartNum(cartNum)
             Spacer(Modifier.height(15.dp))
             BasketItemArrange(
                 basketInfo.value,
-                dynamicTotalPrice
+                dynamicTotalPrice,
+                basketInfo
             )
         }
     } else {
@@ -186,11 +191,13 @@ fun BasketCartNum(
 
 @Composable
 fun BasketItem(
+    id: Int,
     img: String,
     name: String,
     option: String,
     num: Int,
-    price: String
+    price: String,
+    basketInfo: MutableState<List<BasketInfo>?>
 ){
     Row (
         modifier = Modifier
@@ -202,10 +209,10 @@ fun BasketItem(
             )
     ){
         AsyncImage(
-            model = img,
+            model = if(img[0]=='\"'){img.substring(1,img.length-1)} else{img},
             contentDescription = "",
             modifier = Modifier
-                .width(150.dp)
+                .width(125.dp)
                 .height(150.dp)
                 .border(
                     width = 4.dp,
@@ -247,7 +254,6 @@ fun BasketItem(
                         .fillMaxWidth()
                         .weight(1.5f)
                         .height(32.dp)
-
                     ,
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonColors(
@@ -256,7 +262,17 @@ fun BasketItem(
                         disabledContentColor = Color.Transparent,
                         disabledContainerColor = Color.Transparent
                     ),
-                    onClick = {}
+                    onClick = {
+                        runBlocking {
+                            val job = GlobalScope.launch {
+                                basketInfo.value = BasketModify(
+                                    action = "BasketDel",
+                                    product_id = id,
+                                    session_id = session.sessionId.value
+                                )
+                            }
+                        }
+                    }
                 ) {
                     Image(
                         painter = painterResource(R.drawable.basket_del),
@@ -326,7 +342,17 @@ fun BasketItem(
                     Button(
                         modifier = Modifier
                             .size(30.dp),
-                        onClick = {},
+                        onClick = {
+                            runBlocking {
+                                val job = GlobalScope.launch {
+                                    basketInfo.value = BasketModify(
+                                        action = "BasketSub",
+                                        product_id = id,
+                                        session_id = session.sessionId.value
+                                    )
+                                }
+                            }
+                        },
                         contentPadding = PaddingValues(0.dp),
                         colors = ButtonColors(
                             containerColor = Color.Transparent,
@@ -366,7 +392,17 @@ fun BasketItem(
                     Button(
                         modifier = Modifier
                             .size(30.dp),
-                        onClick = {},
+                        onClick = {
+                            runBlocking {
+                                val job = GlobalScope.launch {
+                                    basketInfo.value = BasketModify(
+                                        action = "BasketAdd",
+                                        product_id = id,
+                                        session_id = session.sessionId.value
+                                    )
+                                }
+                            }
+                        },
                         contentPadding = PaddingValues(0.dp),
                         colors = ButtonColors(
                             containerColor = Color.Transparent,
@@ -390,7 +426,8 @@ fun BasketItem(
 @Composable
 fun BasketItemArrange(
     basketItems: List<BasketInfo>?,
-    dynamicTotalPrice: MutableState<String>
+    dynamicTotalPrice: MutableState<String>,
+    basketInfo: MutableState<List<BasketInfo>?>
 ){
     var totalPrice = 0
 
@@ -401,13 +438,15 @@ fun BasketItemArrange(
         basketItems?.forEachIndexed { index, item ->
             val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(item.price)
 
-            totalPrice += item.price.toInt()
+            totalPrice += item.price.toInt() * item.number
             BasketItem(
+                id = item.product_id,
                 img = item.img,
                 name = item.name,
                 option = "옵션 없음",
                 num = item.number,
-                price = textPrice
+                price = textPrice,
+                basketInfo = basketInfo
             )
         }
         dynamicTotalPrice.value = "%,d".format(totalPrice)
