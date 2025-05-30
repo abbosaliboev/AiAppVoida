@@ -1,0 +1,34 @@
+package com.example.team_voida.Tools
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
+import com.example.team_voida.ProductInfo.Loader
+
+@Composable
+fun LoaderSet(info:String = "상품 로딩중"){
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize().background(Color.White)
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("AI가 상품 정보를 요약하는 중입니다. 잠시만 기다려주세요.")
+            }
+    ){
+        Loader()
+        Spacer(Modifier.height(15.dp))
+        Text(info)
+    }
+}

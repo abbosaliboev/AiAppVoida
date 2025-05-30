@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,11 @@ import com.example.team_voida.Start.Start
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.Team_VoidaTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
+// session 관리
+object session{
+    var sessionId = mutableStateOf("")
+}
 
 class MainActivity : ComponentActivity() {
 

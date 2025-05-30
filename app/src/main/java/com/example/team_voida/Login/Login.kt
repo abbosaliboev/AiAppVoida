@@ -1,5 +1,7 @@
 package com.example.team_voida.Login
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -38,18 +42,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.team_voida.CreateAccount.CheckEmail
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.LoginTextFiled
 import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun Login(
     navController: NavController
 ){
+    val email = remember{ mutableStateOf("") }
+    val pw = remember{ mutableStateOf("") }
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -68,13 +80,13 @@ fun Login(
             )
         )
         Spacer(Modifier.height(165.dp))
-        LoginTextField("이메일 또는 전화번호")
+        LoginTextField(email,"이메일 또는 전화번호")
         Spacer(Modifier.height(15.dp))
-        LoginPassWordField("비밀번호")
+        LoginPassWordField(pw,"비밀번호")
         Spacer(Modifier.height(10.dp))
         LoginForgotPW(navController)
         Spacer(Modifier.height(165.dp))
-        LogIntButton(navController)
+        LogIntButton(email, pw, navController)
         Spacer(Modifier.height(15.dp))
         Text(
             modifier = Modifier
@@ -95,9 +107,9 @@ fun Login(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginTextField(
+    input: MutableState<String>,
     placeholder: String
 ){
-    val input = remember{ mutableStateOf("") }
     val interactionSource = remember{ MutableInteractionSource() }
 
     BasicTextField(
@@ -172,9 +184,9 @@ fun LoginTextField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPassWordField(
+    input: MutableState<String>,
     placeholder: String
 ){
-    val input = remember{ mutableStateOf("") }
     val interactionSource = remember{ MutableInteractionSource() }
 
     Box{
@@ -284,8 +296,12 @@ fun LoginForgotPW(
 
 @Composable
 fun LogIntButton(
+    email: MutableState<String>,
+    pw: MutableState<String>,
     navController: NavController
 ){
+    val context = LocalContext.current
+
     Button(
         shape = RectangleShape,
         modifier = Modifier
@@ -298,7 +314,26 @@ fun LogIntButton(
             .clip(shape = RoundedCornerShape(15.dp))
         ,
         onClick = {
-            navController.navigate("guide")
+            var result: String? = null
+
+            runBlocking {
+                val job = GlobalScope.launch {
+                    result = LoginServer(
+                        email = email.value,
+                        pw = pw.value
+                    )
+                }
+            }
+
+            Thread.sleep(1500L)
+
+            if(result != null){
+                session.sessionId.value = result as String
+                Log.e("www",session.sessionId.value)
+                navController.navigate("guide")
+            } else{
+                Toast.makeText(context, "아이디와 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
+            }
         },
         colors = ButtonColors(
             containerColor = ButtonBlue,
