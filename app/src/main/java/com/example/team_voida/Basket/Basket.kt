@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -30,12 +29,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
@@ -55,12 +52,19 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.Tools.LoaderSet
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.BasketPaymentColor
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.Selected
-import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 @Composable
 fun Basket(
@@ -72,7 +76,6 @@ fun Basket(
     selectedIndex: MutableState<Int>,
     productID: MutableState<Int>,
     isItemWhichPart: MutableState<Int>
-
 ){
     val scrollState = rememberScrollState()
     val cartNum = remember { mutableStateOf(0)}
@@ -99,21 +102,35 @@ fun Basket(
         }
     }
 
-    cartNum.value = basketSample.size
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
+    val basketInfo: MutableState<List<BasketInfo>?> = remember { mutableStateOf<List<BasketInfo>?>(null) }
 
-    ){
-        Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
-        BasketCartNum(cartNum)
-        Spacer(Modifier.height(15.dp))
-        BasketItemArrange(
-            basketSample,
-            dynamicTotalPrice
-        )
+    if(basketInfo.value == null){
+        runBlocking {
+            val job = GlobalScope.launch{
+                basketInfo.value = BasketListServer(session.sessionId.value)
+            }
+        }
+    }
+
+    if(basketInfo.value != null){
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
+
+        ){
+            cartNum.value = basketInfo.value!!.size
+            Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
+            BasketCartNum(cartNum)
+            Spacer(Modifier.height(15.dp))
+            BasketItemArrange(
+                basketInfo.value,
+                dynamicTotalPrice
+            )
+        }
+    } else {
+        LoaderSet()
     }
 
 }
@@ -372,7 +389,7 @@ fun BasketItem(
 
 @Composable
 fun BasketItemArrange(
-    basketItems: List<BasketProduct>,
+    basketItems: List<BasketInfo>?,
     dynamicTotalPrice: MutableState<String>
 ){
     var totalPrice = 0
@@ -381,16 +398,16 @@ fun BasketItemArrange(
         modifier = Modifier
             .fillMaxHeight()
     ){
-        basketItems.forEachIndexed { index, item ->
-            val tmp = item.price.replace(",","")
-            val result = tmp.toInt()
-            totalPrice += result
+        basketItems?.forEachIndexed { index, item ->
+            val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(item.price)
+
+            totalPrice += item.price.toInt()
             BasketItem(
                 img = item.img,
                 name = item.name,
-                option = item.option,
-                num = item.num,
-                price = item.price
+                option = "옵션 없음",
+                num = item.number,
+                price = textPrice
             )
         }
         dynamicTotalPrice.value = "%,d".format(totalPrice)

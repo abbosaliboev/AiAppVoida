@@ -1,5 +1,6 @@
 package com.example.team_voida.Login
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,6 +45,7 @@ import androidx.navigation.NavController
 import com.example.team_voida.CreateAccount.CheckEmail
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.LoginTextFiled
 import com.example.team_voida.ui.theme.TextColor
@@ -326,7 +328,8 @@ fun LogIntButton(
             Thread.sleep(1500L)
 
             if(result != null){
-                // Todo, 세션 저장하는 코드 추가
+                session.sessionId.value = result as String
+                Log.e("www",session.sessionId.value)
                 navController.navigate("guide")
             } else{
                 Toast.makeText(context, "아이디와 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()

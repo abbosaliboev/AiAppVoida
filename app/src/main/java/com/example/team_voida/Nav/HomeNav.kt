@@ -60,6 +60,7 @@ import com.example.team_voida.R
 import com.example.team_voida.SearchResult.SearchResult
 import com.example.team_voida.Start.Guide
 import com.example.team_voida.Start.Start
+import com.example.team_voida.session
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -139,7 +140,6 @@ fun HomeNav(){
         }
     }
     Thread.sleep(3500L)
-
 
     val input = remember{ mutableStateOf("") }
 
@@ -300,7 +300,6 @@ fun HomeNav(){
                     translationX = offsetX
                     translationY = offsetY
                 }
-
             ,
             navController = navController,
             startDestination = "home"
