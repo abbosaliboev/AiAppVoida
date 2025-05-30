@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
@@ -42,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.imageLoader
+import coil3.util.DebugLogger
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Home.HomeSearchBar
 import com.example.team_voida.Home.Popular
@@ -63,7 +66,8 @@ fun SearchResult(
     productFlag: MutableState<Boolean>,
     selectedIndex: MutableState<Int>,
     productID: MutableState<Int>,
-    isItemWhichPart: MutableState<Int>
+    isItemWhichPart: MutableState<Int>,
+    barPrice: MutableState<Float>
 ){
 
     ComposableLifecycle { source, event ->
@@ -102,7 +106,10 @@ fun SearchResult(
 
         SearchProducts(
             sampleSearchResult.toList(),
-            navController
+            navController,
+            barPrice = barPrice,
+            productID,
+            isItemWhichPart
         )
         Spacer(Modifier.height(30.dp))
     }
@@ -111,7 +118,10 @@ fun SearchResult(
 @Composable
 fun SearchProducts(
     result: List<Popular>? = null,
-    navController: NavController
+    navController: NavController,
+    barPrice: MutableState<Float>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>,
 ){
 
     var count: Int? = null
@@ -147,7 +157,10 @@ fun SearchProducts(
                         price = tmpResult1.price,
                         description = tmpResult1.description,
                         category = tmpResult1.category,
-                        navController = navController
+                        navController = navController,
+                        barPrice = barPrice,
+                        productID = productID,
+                        isItemWhichPart = isItemWhichPart
                     )
                     SearchCard(
                         id = tmpResult2.id,
@@ -156,7 +169,10 @@ fun SearchProducts(
                         price = tmpResult2.price,
                         description = tmpResult2.description,
                         category = tmpResult2.category,
-                        navController = navController
+                        navController = navController,
+                        barPrice = barPrice,
+                        productID = productID,
+                        isItemWhichPart = isItemWhichPart
                     )
                 }
             }
@@ -203,8 +219,15 @@ fun SearchCard(
     name: String,
     price: Float,
     category: String,
-    navController: NavController
+    navController: NavController,
+    barPrice: MutableState<Float>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>,
 ){
+
+    val imageLoader = LocalContext.current.imageLoader.newBuilder()
+        .logger(DebugLogger())
+        .build()
 
     Box(
         modifier = Modifier
@@ -218,7 +241,12 @@ fun SearchCard(
                 start = 10.dp,
                 end = 10.dp,
             )
-            .clickable {navController.navigate("productInfo")}
+            .clickable {
+                barPrice.value = price
+                productID.value = id
+                isItemWhichPart.value = 0
+                navController.navigate("productInfo")
+            }
     ){
         Image(
             painter = painterResource(R.drawable.home_rec),
@@ -230,6 +258,7 @@ fun SearchCard(
         ){
 
             AsyncImage(
+                imageLoader = imageLoader,
                 modifier = Modifier
                     .offset(
                         y = 10.dp

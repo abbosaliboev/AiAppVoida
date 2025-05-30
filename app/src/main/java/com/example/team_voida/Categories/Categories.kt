@@ -67,8 +67,8 @@ fun Categories(
     basketFlag: MutableState<Boolean>,
     homeNavFlag: MutableState<Boolean>,
     productFlag: MutableState<Boolean>,
-    selectedIndex: MutableState<Int>
-
+    selectedIndex: MutableState<Int>,
+    categoryCode: MutableState<String>
 ){
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
@@ -102,7 +102,7 @@ fun Categories(
         Notification("카테고리 페이지입니다. 아래에 목록에서 원하는 상품 목록을 선택해주세요.")
         CategoryTitle()
         Spacer(Modifier.height(20.dp))
-        CategoryColumn(cateList)
+        CategoryColumn(cateList,categoryCode,navController)
     }
 }
 
@@ -145,7 +145,9 @@ fun CategoryTitle(){
 
 @Composable
 fun CategoryColumn(
-    categoryList: List<CategoryItem>
+    categoryList: List<CategoryItem>,
+    categoryCode: MutableState<String>,
+    navController: NavController
 ){
     Column(
         modifier = Modifier
@@ -157,7 +159,9 @@ fun CategoryColumn(
         categoryList.forEachIndexed { index, item ->
             CategoryRow(
                 item,
-                index
+                index,
+                categoryCode = categoryCode,
+                navController = navController
             )
             Spacer(Modifier.height(10.dp))
         }
@@ -167,7 +171,9 @@ fun CategoryColumn(
 @Composable
 fun CategoryRow(
     categoryItem: CategoryItem,
-    index: Int
+    index: Int,
+    categoryCode: MutableState<String>,
+    navController: NavController
 ){
     val isSelected = remember { mutableStateOf(false) }
     val buttonColor = remember { mutableStateOf(Color.White) }
@@ -280,7 +286,10 @@ fun CategoryRow(
                                 disabledContentColor = Color.White,
                                 disabledContainerColor = Color.White
                             ),
-                            onClick = {},
+                            onClick = {
+                                categoryCode.value = "Vegetable"
+                                navController.navigate("categoryList")
+                            },
                             shape = RoundedCornerShape(5.dp),
                             border = BorderStroke(
                                 width = 1.dp,
@@ -343,7 +352,5 @@ fun CategoryRow(
                 }
             }
         }
-
     }
-
 }

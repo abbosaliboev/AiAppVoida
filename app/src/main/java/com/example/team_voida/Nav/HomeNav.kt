@@ -41,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.team_voida.Basket.Basket
 import com.example.team_voida.Basket.BasketPaymentButton
 import com.example.team_voida.Categories.Categories
+import com.example.team_voida.Categories.CategoryList
 import com.example.team_voida.CreateAccount.CreateAccount
 import com.example.team_voida.CreateAccount.CreateAccountNaming
 import com.example.team_voida.Home.Home
@@ -93,7 +94,7 @@ val navItemList = listOf(
         notify = "계정 화면 이동 버튼"
     )
 )
-@SuppressLint("RememberReturnType")
+@SuppressLint("RememberReturnType", "UnrememberedMutableState")
 @Composable
 fun HomeNav(){
 
@@ -107,11 +108,12 @@ fun HomeNav(){
     val isWhichPart = remember{ mutableStateOf(1) } // 실시간인기, 많이담는특가, ... 의 리스트를 구분하는 숫자
     val productID = remember { mutableStateOf(0)}
     val isItemWhichPart = remember{ mutableStateOf(0) }
+    val price = remember { mutableStateOf(0f) }
+    val categoryCode = remember{ mutableStateOf("") }
 
     var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
-    val productInfoResult: MutableState<ProductInfoInfo?> = remember{ mutableStateOf<ProductInfoInfo?>(null) }
 
 
     val minScale = 1f
@@ -151,12 +153,8 @@ fun HomeNav(){
                     )
                 }
                 if(productFlag.value){
-                    if(productInfoResult.value == null){
-                        ProductInfoBottomBar("0")
-                    } else {
-                        val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(productInfoResult.value!!.price)
-                        ProductInfoBottomBar(textPrice)
-                    }
+                    val textPrice = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).format(price.value)
+                    ProductInfoBottomBar(textPrice)
                 }
                 if(homeNavFlag.value){
                     NavigationBar(
@@ -318,7 +316,8 @@ fun HomeNav(){
                     selectedIndex = selectedIndex,
                     isWhichPart = isWhichPart,
                     productID = productID,
-                    isItemWhichPart = isItemWhichPart
+                    isItemWhichPart = isItemWhichPart,
+                    barPrice = price
                 )
             }
             composable("searchResult") {
@@ -331,7 +330,8 @@ fun HomeNav(){
                     productFlag = productFlag,
                     selectedIndex = selectedIndex,
                     productID = productID,
-                    isItemWhichPart = isItemWhichPart
+                    isItemWhichPart = isItemWhichPart,
+                    barPrice = price
                 )
             }
             composable("basket") {
@@ -355,7 +355,6 @@ fun HomeNav(){
                     selectedIndex = selectedIndex,
                     productID = productID,
                     isItemWhichPart = isItemWhichPart,
-                    productInfoResult
                 )
             }
             composable("categories"){
@@ -364,7 +363,8 @@ fun HomeNav(){
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
-                    selectedIndex = selectedIndex
+                    selectedIndex = selectedIndex,
+                    categoryCode = categoryCode
                 )
             }
 
@@ -405,7 +405,26 @@ fun HomeNav(){
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
                     selectedIndex = selectedIndex,
-                    isWhichPart = isWhichPart
+                    isWhichPart = isWhichPart,
+                    barPrice = price,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart
+                )
+            }
+
+            composable("categoryList") {
+                CategoryList(
+                    navController = navController,
+                    input = input,
+                    basketFlag = basketFlag,
+                    homeNavFlag = homeNavFlag,
+                    productFlag = productFlag,
+                    selectedIndex = selectedIndex,
+                    isWhichPart = isWhichPart,
+                    barPrice = price,
+                    categoryCode = categoryCode.value,
+                    productID = productID,
+                    isItemWhichPart = isItemWhichPart
                 )
             }
         }

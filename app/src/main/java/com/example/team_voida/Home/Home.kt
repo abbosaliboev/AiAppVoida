@@ -78,7 +78,8 @@ fun Home(
     selectedIndex: MutableState<Int>,
     isWhichPart: MutableState<Int>,
     productID: MutableState<Int>,
-    isItemWhichPart: MutableState<Int>
+    isItemWhichPart: MutableState<Int>,
+    barPrice: MutableState<Float>
 ){
     val scrollState = rememberScrollState()
     Log.e("zxz",result.toString())
@@ -118,14 +119,15 @@ fun Home(
             navController,
             input
         )
-        HomePopularRanking(navController,isWhichPart,1)
+        HomePopularRanking(navController,isWhichPart,1,isItemWhichPart)
         if (result != null) {
             HomeProducts(
                 result = result.slice(0..9),
                 productID = productID,
                 navController = navController,
                 isItemWhichPart = isItemWhichPart,
-                indexRow = 1
+                indexRow = 1,
+                barPrice = barPrice
             )
         }
 
@@ -134,6 +136,7 @@ fun Home(
             navController = navController,
             title = "많이 담는 특가",
             isWhichPart,
+            isItemWhichPart,
             2
         )
         if (result != null) {
@@ -142,7 +145,8 @@ fun Home(
                 productID = productID,
                 navController = navController,
                 isItemWhichPart = isItemWhichPart,
-                indexRow = 2
+                indexRow = 2,
+                barPrice = barPrice
             )
         }
 
@@ -151,6 +155,7 @@ fun Home(
             navController = navController,
             title = "하루 특가",
             isWhichPart,
+            isItemWhichPart,
             3
         )
         if (result != null) {
@@ -159,7 +164,8 @@ fun Home(
                 productID = productID,
                 navController = navController,
                 isItemWhichPart = isItemWhichPart,
-                indexRow = 3
+                indexRow = 3,
+                barPrice = barPrice
             )
         }
 
@@ -168,6 +174,7 @@ fun Home(
             navController = navController,
             title = "인기 신상품",
             isWhichPart,
+            isItemWhichPart,
             4
         )
         if (result != null) {
@@ -176,7 +183,8 @@ fun Home(
                 productID = productID,
                 navController = navController,
                 isItemWhichPart = isItemWhichPart,
-                indexRow = 4
+                indexRow = 4,
+                barPrice = barPrice
             )
         }
         Spacer(Modifier.height(45.dp))
@@ -218,14 +226,17 @@ fun HomeSearchBar(
 fun HomePopularRanking(
     navController: NavController,
     isWhichPart: MutableState<Int>,
-    index: Int
+    index: Int,
+    isItemWhichPart: MutableState<Int>,
+
 ){
     Column {
         HomeBar(
             navController = navController,
             title = "실시간 인기",
             isWhichPart = isWhichPart,
-            index
+            isItemWhichPart = isItemWhichPart,
+            index = index
         )
     }
 }
@@ -237,6 +248,7 @@ fun HomeBar(
     navController: NavController,
     title: String,
     isWhichPart: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>,
     index: Int
 ){
     Row (
@@ -288,6 +300,7 @@ fun HomeBar(
                 modifier = Modifier
                     .clickable {
                         isWhichPart.value = index
+                        isItemWhichPart.value = index
                         navController.navigate("partList")
                     }
             )
@@ -303,7 +316,8 @@ fun HomeProducts(
     productID: MutableState<Int>,
     navController: NavController,
     isItemWhichPart: MutableState<Int>,
-    indexRow: Int
+    indexRow: Int,
+    barPrice: MutableState<Float>
 ){
 
     var count: Int? = null
@@ -340,7 +354,8 @@ fun HomeProducts(
                         productID = productID,
                         navController = navController,
                         isItemWhichPart = isItemWhichPart,
-                        indexRow = indexRow
+                        indexRow = indexRow,
+                        barPrice = barPrice
                     )
                     HomeCard(
                         id = tmpResult2.id,
@@ -352,7 +367,8 @@ fun HomeProducts(
                         productID = productID,
                         navController = navController,
                         isItemWhichPart = isItemWhichPart,
-                        indexRow = indexRow
+                        indexRow = indexRow,
+                        barPrice = barPrice
                     )
                 }
             }
@@ -402,7 +418,8 @@ fun HomeCard(
     productID: MutableState<Int>,
     navController: NavController,
     indexRow: Int,
-    isItemWhichPart: MutableState<Int>
+    isItemWhichPart: MutableState<Int>,
+    barPrice: MutableState<Float>
 ){
     val imageLoader = LocalContext.current.imageLoader.newBuilder()
         .logger(DebugLogger())
@@ -421,6 +438,7 @@ fun HomeCard(
                 end = 10.dp,
             )
             .clickable {
+                barPrice.value = price
                 isItemWhichPart.value = indexRow
                 productID.value = id
                 Log.e("qqq","in click ${isItemWhichPart.value}")
