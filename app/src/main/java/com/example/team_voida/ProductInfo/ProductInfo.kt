@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
@@ -62,6 +63,7 @@ import com.example.team_voida.CreateAccount.CheckEmail
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.Payment.PaymentServerOne
 import com.example.team_voida.R
+import com.example.team_voida.Tools.LoaderSet
 import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlackColor
 import com.example.team_voida.ui.theme.ButtonBlue
@@ -87,6 +89,8 @@ fun ProductInfo(
 ){
 
     var result: MutableState<ProductInfoInfo?> = remember { mutableStateOf<ProductInfoInfo?>(null) }
+    val review: MutableState<ReviewInfo?> = remember { mutableStateOf<ReviewInfo?>(null) }
+    val isReview: MutableState<Boolean> = remember { mutableStateOf(false) }
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -221,20 +225,69 @@ fun ProductInfo(
                 color = Color.Black
             )
             Spacer(Modifier.height(5.dp))
-            Text(
-                modifier = Modifier
-                    .padding(
-                        start = 18.dp,
-                        end = 18.dp
-                    ),
-                text = result.value!!.ai_review,
-                color = TextLittleDark,
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_regular))
-                ),
-                lineHeight = 30.sp
-            )
+
+            if(!isReview.value){
+                Spacer(Modifier.height(5.dp))
+                Button(
+                    shape = RectangleShape,
+                    modifier = Modifier
+                        .padding(
+                            start = 10.dp,
+                            end = 10.dp
+                        )
+                        .fillMaxWidth()
+                        .height(65.dp)
+                        .clip(shape = RoundedCornerShape(15.dp)),
+                    onClick = {
+                        isReview.value = !isReview.value
+                        runBlocking {
+                            val job = GlobalScope.launch {
+                                review.value = ReviewInfoServer(
+                                    product_id = productID.value,
+                                    isWhichItem = isItemWhichPart.value
+                                )
+                            }
+                        }
+                    },
+                    colors = ButtonColors(
+                        containerColor = ButtonBlue,
+                        contentColor = TextWhite,
+                        disabledContentColor = TextWhite,
+                        disabledContainerColor = ButtonBlue
+                    )
+                ) {
+                    Text(
+                        text = "리뷰 정보 요약",
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            color = TextWhite,
+                            fontSize = 17.sp,
+                            fontFamily = FontFamily(Font(R.font.pretendard_regular))
+                        )
+                    )
+                }
+            } else {
+                if(review.value == null){
+                    Spacer(Modifier.height(5.dp))
+                    LoaderSet(info = "리뷰 로딩중")
+                } else {
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                start = 18.dp,
+                                end = 18.dp
+                            ),
+                        text = review.value!!.ai_review,
+                        color = TextLittleDark,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontFamily = FontFamily(Font(R.font.pretendard_regular))
+                        ),
+                        lineHeight = 30.sp
+                    )
+                }
+            }
+
             Spacer(Modifier.height(20.dp))
 
 
