@@ -45,12 +45,17 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.util.DebugLogger
+import com.example.team_voida.Basket.BasketInfo
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Home.HomeSearchBar
 import com.example.team_voida.Home.Popular
 import com.example.team_voida.Nav.navItemList
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.Tools.LoaderSet
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -90,28 +95,151 @@ fun SearchResult(
             Log.e("123","on_resume")
         }
     }
+
+    val searchResultItem: MutableState<List<SearchResultItem>?> = remember { mutableStateOf<List<SearchResultItem>?>(null) }
+
     val scrollState = rememberScrollState()
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
 
-    ) {
-        Notification(productName + " 검색결과 입니다. 아래에 검색된 상품들을 만나보세요.")
-        HomeSearchBar(
-            navController,
-            input
-        )
+    runBlocking {
+        val job = GlobalScope.launch {
+            searchResultItem.value = SearchResultServer(
+                input.value
+            )
+        }
+    }
+    if(searchResultItem.value != null){
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
 
-        SearchProducts(
-            sampleSearchResult.toList(),
-            navController,
-            barPrice = barPrice,
-            productID,
-            isItemWhichPart
-        )
-        Spacer(Modifier.height(30.dp))
+        ) {
+            Notification(productName + " 검색결과 입니다. 아래에 검색된 상품들을 만나보세요.")
+            HomeSearchBar(
+                navController,
+                input
+            )
+
+            RealSearchProducts(
+                searchResultItem.value,
+                navController,
+                barPrice = barPrice,
+                productID,
+                isItemWhichPart
+            )
+            Spacer(Modifier.height(30.dp))
+        }
+    } else {
+        LoaderSet()
+    }
+}
+
+@Composable
+fun RealSearchProducts(
+    result: List<SearchResultItem>? = null,
+    navController: NavController,
+    barPrice: MutableState<Float>,
+    productID: MutableState<Int>,
+    isItemWhichPart: MutableState<Int>,
+){
+
+    var count: Int? = null
+
+    // represent {index * 2} items
+    val index = remember { mutableStateOf(5) } // 보여 주고자 하는 상품의 개수
+
+
+    //Todo, control the time optimally...
+    // 분명 sleep with time 이 아닌
+    // wait로 처리하는 로직이 있을 거 같음.
+
+
+    if(result != null){
+        count = result!!.size // 실제 검색된 상품의 개수
+    }
+
+    Column {
+        // 아래의 for 문은 보여주고자 하는 상품으 개수를 결정
+        for(i in 1..index.value){
+            val realIndex = i-1
+            Row (
+                modifier = Modifier
+                    .padding(10.dp)
+            ){
+                if(count != null){
+                    var tmpResult1: SearchResultItem? = null
+                    var tmpResult2: SearchResultItem? = null
+                    if(realIndex*2+1 <= count){
+                        tmpResult1 = result!![realIndex*2]
+                    }
+                    if(realIndex*2+2 <= count){
+                        tmpResult2 = result!![realIndex*2+1]
+                    }
+//                    val tmpResult1 = result!![realIndex*2]
+//                    val tmpResult2 = result[realIndex*2+1]
+                    if (tmpResult1 != null) {
+                        SearchCard(
+                            id = tmpResult1.id,
+                            img = tmpResult1.image_url,
+                            name = tmpResult1.name,
+                            price = tmpResult1.price,
+                            description = tmpResult1.description,
+                            category = tmpResult1.category,
+                            navController = navController,
+                            barPrice = barPrice,
+                            productID = productID,
+                            isItemWhichPart = isItemWhichPart
+                        )
+                    }
+                    if (tmpResult2 != null) {
+                        SearchCard(
+                            id = tmpResult2.id,
+                            img = tmpResult2.image_url,
+                            name = tmpResult2.name,
+                            price = tmpResult2.price,
+                            description = tmpResult2.description,
+                            category = tmpResult2.category,
+                            navController = navController,
+                            barPrice = barPrice,
+                            productID = productID,
+                            isItemWhichPart = isItemWhichPart
+                        )
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .clickable {
+                    // index 값을 증가시켜, 해당 값에 따라 추가 아이템들이 나타나도록 구현
+                    if(count != null && index.value*2 < count){
+                        index.value += 5
+                    }
+                }
+        ){
+            Image(
+                modifier = Modifier
+                    .size(10.dp)
+                    .offset(
+                        y = 3.dp
+                    ),
+                painter = painterResource(R.drawable.arrow_down),
+                contentDescription = ""
+            )
+            Spacer(Modifier.width(3.dp))
+            Text(
+                text = "상품 더보기",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                )
+            )
+        }
     }
 }
 
@@ -140,40 +268,52 @@ fun SearchProducts(
     }
 
     Column {
+        // 아래의 for 문은 보여주고자 하는 상품으 개수를 결정
         for(i in 1..index.value){
             val realIndex = i-1
             Row (
                 modifier = Modifier
                     .padding(10.dp)
             ){
-                if(count != null && index.value <= count){
-
-                    val tmpResult1 = result!![realIndex*2]
-                    val tmpResult2 = result!![realIndex*2+1]
-                    SearchCard(
-                        id = tmpResult1.id,
-                        img = tmpResult1.image_url,
-                        name = tmpResult1.name,
-                        price = tmpResult1.price,
-                        description = tmpResult1.description,
-                        category = tmpResult1.category,
-                        navController = navController,
-                        barPrice = barPrice,
-                        productID = productID,
-                        isItemWhichPart = isItemWhichPart
-                    )
-                    SearchCard(
-                        id = tmpResult2.id,
-                        img = tmpResult2.image_url,
-                        name = tmpResult2.name,
-                        price = tmpResult2.price,
-                        description = tmpResult2.description,
-                        category = tmpResult2.category,
-                        navController = navController,
-                        barPrice = barPrice,
-                        productID = productID,
-                        isItemWhichPart = isItemWhichPart
-                    )
+                if(count != null){
+                    var tmpResult1: Popular? = null
+                    var tmpResult2: Popular? = null
+                    if(realIndex*2+1 <= count){
+                        tmpResult1 = result!![realIndex*2]
+                    }
+                    if(realIndex*2+2 <= count){
+                        tmpResult2 = result!![realIndex*2+1]
+                    }
+//                    val tmpResult1 = result!![realIndex*2]
+//                    val tmpResult2 = result[realIndex*2+1]
+                    if (tmpResult1 != null) {
+                        SearchCard(
+                            id = tmpResult1.id,
+                            img = tmpResult1.image_url,
+                            name = tmpResult1.name,
+                            price = tmpResult1.price,
+                            description = tmpResult1.description,
+                            category = tmpResult1.category,
+                            navController = navController,
+                            barPrice = barPrice,
+                            productID = productID,
+                            isItemWhichPart = isItemWhichPart
+                        )
+                    }
+                    if (tmpResult2 != null) {
+                        SearchCard(
+                            id = tmpResult2.id,
+                            img = tmpResult2.image_url,
+                            name = tmpResult2.name,
+                            price = tmpResult2.price,
+                            description = tmpResult2.description,
+                            category = tmpResult2.category,
+                            navController = navController,
+                            barPrice = barPrice,
+                            productID = productID,
+                            isItemWhichPart = isItemWhichPart
+                        )
+                    }
                 }
             }
         }
@@ -302,3 +442,5 @@ fun SearchCard(
         }
     }
 }
+
+
