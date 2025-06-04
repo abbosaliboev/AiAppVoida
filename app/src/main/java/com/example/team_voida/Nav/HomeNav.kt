@@ -39,6 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.team_voida.Basket.Basket
+import com.example.team_voida.Basket.BasketInfo
 import com.example.team_voida.Basket.BasketPaymentButton
 import com.example.team_voida.Categories.Categories
 import com.example.team_voida.Categories.CategoryList
@@ -132,15 +133,15 @@ fun HomeNav(){
     // Lens(zoom) variable
     val interactionSource = remember{ MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val result: MutableState<List<Popular>?> = remember { mutableStateOf<List<Popular>?>(null) }
 
-    var result: List<Popular>? = null
 
     runBlocking {
         val job = GlobalScope.launch {
-            result = HomePopularCall()
+            result.value = HomePopularCall()
         }
     }
-    Thread.sleep(3500L)
+
 
     val input = remember{ mutableStateOf("") }
 
@@ -316,7 +317,7 @@ fun HomeNav(){
                 Home(
                     navController = navController,
                     input = input,
-                    result = result,
+                    result = result.value,
                     basketFlag = basketFlag,
                     homeNavFlag = homeNavFlag,
                     productFlag = productFlag,
