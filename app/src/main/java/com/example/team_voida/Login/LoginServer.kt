@@ -62,12 +62,12 @@ suspend fun LoginServer(
             return json.session_id
         } else {
             Log.e("xxx","else")
-            return  null
+            return null
         }
     } catch (e: Exception) {
         Log.e("xxx","catch")
 
         e.printStackTrace()
-        return  null
+        return null
     }
 }

@@ -10,6 +10,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil3.imageLoader
 import coil3.util.DebugLogger
+import com.example.team_voida.Basket.BasketInfo
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Home.HomeBigSaleList
 import com.example.team_voida.Home.HomeNewList
@@ -27,6 +30,7 @@ import com.example.team_voida.Home.HomeTodaySaleList
 import com.example.team_voida.Home.Popular
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.SearchResult.SearchProducts
+import com.example.team_voida.Tools.LoaderSet
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -72,38 +76,43 @@ fun CategoryList(
             Log.e("123","on_resume")
         }
     }
+    val result: MutableState<List<Popular>?> = remember { mutableStateOf<List<Popular>?>(null) }
 
-    var result: List<Popular>? = null
 
     runBlocking {
         val job = GlobalScope.launch {
-            result = CategoryServer(categoryCode)
+            result.value = CategoryServer(categoryCode)
         }
     }
 
-    Thread.sleep(1000L)
 
     val scrollState = rememberScrollState()
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
 
-    ) {
-        Notification(title + " 목록 화면입니다. 아래에 검색된 상품들을 만나보세요.")
-        HomeSearchBar(
-            navController,
-            input
-        )
+    if(result.value != null){
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
 
-        SearchProducts(
-            result,
-            navController,
-            barPrice,
-            productID,
-            isItemWhichPart
-        )
-        Spacer(Modifier.height(30.dp))
+        ) {
+            Notification(title + " 목록 화면입니다. 아래에 검색된 상품들을 만나보세요.")
+            HomeSearchBar(
+                navController,
+                input
+            )
+
+            SearchProducts(
+                result.value,
+                navController,
+                barPrice,
+                productID,
+                isItemWhichPart
+            )
+            Spacer(Modifier.height(30.dp))
+        }
+    } else{
+        LoaderSet()
     }
+
 }

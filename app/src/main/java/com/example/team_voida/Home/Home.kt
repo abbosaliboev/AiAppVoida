@@ -58,6 +58,7 @@ import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.SearchBar
+import com.example.team_voida.Tools.LoaderSet
 import com.example.team_voida.ui.theme.TextLittleDark
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -106,89 +107,93 @@ fun Home(
     // TODO
     // 임시로 result를 공통으로 사용
 
+    if(result != null){
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
-
-    ){
-        Notification("홈 화면입니다. 실시간 인기 상품과 특가 상품을 만나볼 수 있습니다. 화면을 아래로 스크롤하여 다양한 이벤트 상품을 만나보세요!")
-        HomeSearchBar(
-            navController,
-            input
-        )
-        HomePopularRanking(navController,isWhichPart,1,isItemWhichPart)
-        if (result != null) {
-            HomeProducts(
-                result = result.slice(0..9),
-                productID = productID,
-                navController = navController,
-                isItemWhichPart = isItemWhichPart,
-                indexRow = 1,
-                barPrice = barPrice
+        ){
+            Notification("홈 화면입니다. 실시간 인기 상품과 특가 상품을 만나볼 수 있습니다. 화면을 아래로 스크롤하여 다양한 이벤트 상품을 만나보세요!")
+            HomeSearchBar(
+                navController,
+                input
             )
-        }
+            HomePopularRanking(navController,isWhichPart,1,isItemWhichPart)
+            if (result != null) {
+                HomeProducts(
+                    result = result.slice(0..9),
+                    productID = productID,
+                    navController = navController,
+                    isItemWhichPart = isItemWhichPart,
+                    indexRow = 1,
+                    barPrice = barPrice
+                )
+            }
 
-        Notification("아래에 요즘 많이 담기는 특가 상품을 만나보세요!")
-        HomeBar(
-            navController = navController,
-            title = "많이 담는 특가",
-            isWhichPart,
-            isItemWhichPart,
-            2
-        )
-        if (result != null) {
-            HomeProducts(
-                result = result.slice(10..19),
-                productID = productID,
+            Notification("아래에 요즘 많이 담기는 특가 상품을 만나보세요!")
+            HomeBar(
                 navController = navController,
-                isItemWhichPart = isItemWhichPart,
-                indexRow = 2,
-                barPrice = barPrice
+                title = "많이 담는 특가",
+                isWhichPart,
+                isItemWhichPart,
+                2
             )
-        }
+            if (result != null) {
+                HomeProducts(
+                    result = result.slice(10..19),
+                    productID = productID,
+                    navController = navController,
+                    isItemWhichPart = isItemWhichPart,
+                    indexRow = 2,
+                    barPrice = barPrice
+                )
+            }
 
-        Notification("아래에 오늘 하루만 진행하는 특가 이벤트 상품을 만나보세요!")
-        HomeBar(
-            navController = navController,
-            title = "하루 특가",
-            isWhichPart,
-            isItemWhichPart,
-            3
-        )
-        if (result != null) {
-            HomeProducts(
-                result = result.slice(20..29),
-                productID = productID,
+            Notification("아래에 오늘 하루만 진행하는 특가 이벤트 상품을 만나보세요!")
+            HomeBar(
                 navController = navController,
-                isItemWhichPart = isItemWhichPart,
-                indexRow = 3,
-                barPrice = barPrice
+                title = "하루 특가",
+                isWhichPart,
+                isItemWhichPart,
+                3
             )
-        }
+            if (result != null) {
+                HomeProducts(
+                    result = result.slice(20..29),
+                    productID = productID,
+                    navController = navController,
+                    isItemWhichPart = isItemWhichPart,
+                    indexRow = 3,
+                    barPrice = barPrice
+                )
+            }
 
-        Notification("아래에 요즘 뜨고 있는 인기 신상품을 만나보세요!")
-        HomeBar(
-            navController = navController,
-            title = "인기 신상품",
-            isWhichPart,
-            isItemWhichPart,
-            4
-        )
-        if (result != null) {
-            HomeProducts(
-                result = result.slice(30..39),
-                productID = productID,
+            Notification("아래에 요즘 뜨고 있는 인기 신상품을 만나보세요!")
+            HomeBar(
                 navController = navController,
-                isItemWhichPart = isItemWhichPart,
-                indexRow = 4,
-                barPrice = barPrice
+                title = "인기 신상품",
+                isWhichPart,
+                isItemWhichPart,
+                4
             )
+            if (result != null) {
+                HomeProducts(
+                    result = result.slice(30..39),
+                    productID = productID,
+                    navController = navController,
+                    isItemWhichPart = isItemWhichPart,
+                    indexRow = 4,
+                    barPrice = barPrice
+                )
+            }
+            Spacer(Modifier.height(45.dp))
         }
-        Spacer(Modifier.height(45.dp))
+    } else{
+        LoaderSet()
     }
+
 }
 
 @Composable

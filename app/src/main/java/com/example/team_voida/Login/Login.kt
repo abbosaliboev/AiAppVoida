@@ -325,7 +325,7 @@ fun LogIntButton(
                 }
             }
 
-            Thread.sleep(1500L)
+            Thread.sleep(2000L)
 
             if(result != null){
                 session.sessionId.value = result as String
