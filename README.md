@@ -23,9 +23,6 @@ This project aims to develop an Android shopping application tailored specifical
 - **Zoom Functionality**
   - Supports low-vision users with screen magnification options
 
-- **One-Tap Payment**
-  - Simplified checkout process with a single-tap payment feature
-
 - **Voice Search**
   - Easily find products using voice commands
 
@@ -104,9 +101,6 @@ See the [LICENSE](./LICENSE) file for more details.
 
 - **화면 확대 기능**
   - 저시력 사용자를 위한 확대 기능 제공
-
-- **원터치 간편 결제**
-  - 결제 절차를 단순화하여 원터치로 결제 가능
 
 - **음성 검색 기능**
   - 음성으로 상품을 검색할 수 있는 기능
