@@ -69,6 +69,11 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+// HomeNav 파일에 거의 모든 컴포저블에서 사용하는 정보가 저장됨.
+// 즉 거의 대부분의 컴포저블은 HomeNav로 부터 시작되며
+// HomeNav에서 선언한 변수를 인자로 받아 사용함
+
+// 하단 네비게이션 리스트 
 val navItemList = listOf(
     BottomNav(
         unSelected = R.drawable.bottom_home,
@@ -100,6 +105,7 @@ val navItemList = listOf(
 @Composable
 fun HomeNav(){
 
+    // 각 화면에서 사용할 변수들 선언 ex) 네비게이션, 하단네비 Flag bit, 검색 입력란 ... 
     val navController = rememberNavController() // home nav
     val basketController = rememberNavController()
     var selectedIndex = remember { mutableStateOf(0) }
@@ -118,7 +124,7 @@ fun HomeNav(){
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
 
-
+    // 화면 최소/최대 확대 비율 설정
     val minScale = 1f
     val maxScale = 4f
 
@@ -135,17 +141,18 @@ fun HomeNav(){
     val isPressed by interactionSource.collectIsPressedAsState()
     val result: MutableState<List<Popular>?> = remember { mutableStateOf<List<Popular>?>(null) }
 
-
+    // 홈 화면에 제공할 데이터를 서버에 요청
     runBlocking {
         val job = GlobalScope.launch {
             result.value = HomePopularCall()
         }
     }
 
-
+    // 검색 입력 데이터 저장
     val input = remember{ mutableStateOf("") }
 
     Scaffold(
+        // 모든 하단 네비게이션 등록
         bottomBar = {
             Column {
                 if(basketFlag.value){
@@ -257,6 +264,8 @@ fun HomeNav(){
             modifier = Modifier
                 .padding(inner)
                 .fillMaxSize()
+                // 아래의 코드는 인터넷에 제공된 오픈소스 참고
+                // 화면을 확대 및 축소하는 기능
                 .pointerInput(Unit){
                     detectTransformGestures{_, pan, _, _ ->
 
@@ -313,6 +322,7 @@ fun HomeNav(){
             navController = navController,
             startDestination = "home"
         ) {
+            // HomeNav에서 갈 수 있는 모든 페이지의 네비게이션 등록
             composable("home") {
                 Home(
                     navController = navController,

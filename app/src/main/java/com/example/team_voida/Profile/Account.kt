@@ -60,6 +60,8 @@ import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
 
+
+// 유저 정보 메인 컴포저블
 @Composable
 fun Account(
     navController: NavController,
@@ -69,7 +71,8 @@ fun Account(
     selectedIndex: MutableState<Int>
 ){
     val scrollState = rememberScrollState()
-
+    
+    // 유저 정보 페이지에 해당하는 하단 네비 Flag Bit 활성화
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -218,6 +221,7 @@ fun Account(
     }
 }
 
+// 유저 정보 프로필 이미지 컴포저블
 @Composable
 fun AccountProfileImg(){
     Box(
@@ -275,6 +279,8 @@ fun AccountProfileImg(){
     }
 }
 
+// 유저 정보 입력란 컴포저블
+// 베이직 텍스트 필드 커스텀 마이즈
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountTextField(

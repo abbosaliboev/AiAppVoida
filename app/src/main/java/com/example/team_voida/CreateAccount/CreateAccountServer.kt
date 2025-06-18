@@ -3,6 +3,7 @@ package com.example.team_voida.CreateAccount
 import android.provider.Settings.Global
 import android.util.Log
 import com.example.team_voida.Home.Popular
+import com.example.team_voida.session
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,8 +38,11 @@ data class SessionId(
     val sessionId: String
 )
 
-
-
+@Serializable
+data class SignUpFinish(
+    val result: Boolean,
+    val session_id: String
+)
 // 회원가입, 사용자 정보가 서버에 전달
 @OptIn(DelicateCoroutinesApi::class)
 suspend fun CheckEmail(
@@ -95,7 +99,7 @@ suspend fun CreateAccountServer(
     pw: String,
     cell: String,
     un: String
-):String?{
+):Boolean?{
     val jsonObject = JSONObject()
     jsonObject.put("email", email)
     jsonObject.put("pw", pw)
@@ -125,13 +129,16 @@ suspend fun CreateAccountServer(
 
         val outputStreamWriter = OutputStreamWriter(connection.outputStream)
         outputStreamWriter.write(jsonObjectString)
+
         outputStreamWriter.flush()
 
-
         if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+
             val inputStream = connection.inputStream.bufferedReader().use { it.readText() }
-            val json = Json.decodeFromString<SessionId>(inputStream) // edit3
-            return json.sessionId
+            val json = Json.decodeFromString<SignUpFinish>(inputStream) // edit3
+            session.sessionId.value = json.session_id as String
+
+            return json.result
         } else {
             return  null
         }

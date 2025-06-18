@@ -66,6 +66,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+// 장바구니 메인 컴포저블
 @Composable
 fun Basket(
     dynamicTotalPrice: MutableState<String>,
@@ -78,9 +79,11 @@ fun Basket(
     isItemWhichPart: MutableState<Int>
 ){
     val scrollState = rememberScrollState()
+    
+    // 장바구니 개수
     val cartNum = remember { mutableStateOf(0)}
 
-
+    // HomeNav에서 하단 네비를 다룸. 장바구니 페이지에서는 장바구니 네비를 활성화
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -104,6 +107,7 @@ fun Basket(
 
     val basketInfo: MutableState<List<BasketInfo>?> = remember { mutableStateOf<List<BasketInfo>?>(null) }
 
+    // 서버에 장바구니 정보 요청
     if(basketInfo.value == null){
         runBlocking {
             val job = GlobalScope.launch{
@@ -111,7 +115,8 @@ fun Basket(
             }
         }
     }
-
+    
+    // 요청이 전달된 경우 장바구니 정보 출력
     if(basketInfo.value != null){
         Column (
             modifier = Modifier
@@ -125,9 +130,11 @@ fun Basket(
                 tmp += item.number
             }
             cartNum.value = tmp
+            // 안내바
             Notification("장바구니 화면입니다. 아래에 장바구니에 담긴 상품을 확인하고, 오른쪽 하단의 결제하기 버튼으로 상품을 구매하세요.")
             BasketCartNum(cartNum)
             Spacer(Modifier.height(15.dp))
+            // 장바구니 아이템 리스트
             BasketItemArrange(
                 basketInfo.value,
                 dynamicTotalPrice,
@@ -135,11 +142,12 @@ fun Basket(
             )
         }
     } else {
-        LoaderSet()
+        LoaderSet(semantics = "장바구니 정보를 불러오는 중입니다. 잠시만 기다려주세요.")
     }
 
 }
 
+// 장바구니 아이템 개수 컴포저블
 @Composable
 fun BasketCartNum(
     cartNum: MutableState<Int>
@@ -189,6 +197,7 @@ fun BasketCartNum(
     }
 }
 
+// 장바구니 아이템 카드 컴포저블
 @Composable
 fun BasketItem(
     id: Int,
@@ -201,6 +210,9 @@ fun BasketItem(
 ){
     Row (
         modifier = Modifier
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString(name + "상품이 총" + num + "개 담겨 있습니다. 상품 가격은" + price + "입니다.")
+            }
             .fillMaxWidth()
             .padding(
                 start = 10.dp,
@@ -276,7 +288,7 @@ fun BasketItem(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.basket_del),
-                        contentDescription = "",
+                        contentDescription = "상품 제거 버튼",
                         modifier = Modifier
 //                            .width(30.dp)
 //                            .height(30.dp)
@@ -363,7 +375,7 @@ fun BasketItem(
                     ) {
                         Image(
                             painter = painterResource( R.drawable.basket_sub),
-                            contentDescription = ""
+                            contentDescription = "상품 개수 감소 버튼"
                         )
                     }
                     Spacer(Modifier.width(5.dp))
@@ -413,7 +425,7 @@ fun BasketItem(
                     ) {
                         Image(
                             painter = painterResource( R.drawable.basket_add),
-                            contentDescription = ""
+                            contentDescription = "상품 개수 증가 버튼"
                         )
                     }
                 }
@@ -423,6 +435,7 @@ fun BasketItem(
     }
 }
 
+// 장바구니 아이템 카드를 정렬하는 컴포저블
 @Composable
 fun BasketItemArrange(
     basketItems: List<BasketInfo>?,
@@ -453,6 +466,7 @@ fun BasketItemArrange(
     }
 }
 
+// 장바구니 결제 버튼 컴포저블
 @Composable
 fun BasketPaymentButton(
     price: String,
@@ -462,6 +476,9 @@ fun BasketPaymentButton(
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("총 ${price}원을 결제합니다. 우측의 결제하기 버튼을 눌러주세요.")
+            }
             .background(
                 color = BasketPaymentColor
             )

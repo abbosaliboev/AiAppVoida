@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.LoginTextFiled
 import com.example.team_voida.ui.theme.TextColor
@@ -233,7 +234,7 @@ fun UserNameButton(
         ,
         onClick = {
 
-            var check: String? = null
+            var check: Boolean? = false
             Log.e("zzz",email)
             Log.e("zzz",pw)
             Log.e("zzz",cell)
@@ -251,9 +252,9 @@ fun UserNameButton(
             }
             check?.let { Log.e("xxx", it.toString()) }
 
-            Thread.sleep(1000L)
+            Thread.sleep(3500L)
 
-            if(true){
+            if(check == true){
                 navController.navigate("guide")
             } else{
                 Toast.makeText(context, "이미 존재하는 닉네임 입니다.", Toast.LENGTH_SHORT).show()

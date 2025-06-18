@@ -112,7 +112,7 @@ fun CategoryList(
             Spacer(Modifier.height(30.dp))
         }
     } else{
-        LoaderSet()
+        LoaderSet(semantics = "카테고리 상품 정보를 불러오는 중입니다. 잠시만 기다려주세요.")
     }
 
 }

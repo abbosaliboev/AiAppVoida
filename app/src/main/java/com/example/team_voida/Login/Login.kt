@@ -55,6 +55,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+
+// 로그인 메인 컴포저블
 @Composable
 fun Login(
     navController: NavController
@@ -103,6 +105,8 @@ fun Login(
     }
 }
 
+// 로그인 입력란 컴포저블
+// BasicTextField를 커스텀하여 제작
 // Todo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -181,6 +185,7 @@ fun LoginTextField(
     )
 }
 
+// 위와 동일
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPassWordField(
@@ -294,6 +299,7 @@ fun LoginForgotPW(
     }
 }
 
+// 로그인 버튼 컴포저블
 @Composable
 fun LogIntButton(
     email: MutableState<String>,

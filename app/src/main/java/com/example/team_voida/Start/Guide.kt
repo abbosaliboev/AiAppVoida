@@ -35,6 +35,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -48,6 +51,7 @@ import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
 
+// 사용자 안내 메인 컴포저블
 @Composable
 fun Guide(
     navController: NavController
@@ -77,6 +81,7 @@ fun GuidePager(
             pageCount = {pageCount}
         )
 
+        // 스와이프 제스쳐를 위한 컴포저블 활용
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -118,6 +123,7 @@ fun GuidePager(
     }
 }
 
+// Guide1, Guide2, Guide3, Guide4 모두 화면 안내 관려 페이지
 @Composable
 fun Guide1(
 ){
@@ -125,7 +131,11 @@ fun Guide1(
         modifier = Modifier
             .fillMaxWidth()
     ){
-        Box(){
+        Box(
+            modifier = Modifier
+                .semantics(mergeDescendants = true){
+            }
+        ){
             Image(
 
                 painter = painterResource(R.drawable.guide1),
@@ -145,7 +155,7 @@ fun Guide1(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "안녕하세요 Vodia 쇼핑입니다.",
+                    text = "안녕하세요 Voida 쇼핑입니다.",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontSize = 25.sp,
@@ -170,7 +180,7 @@ fun Guide1(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "우측으로 스와이프 →",
+                    text = "두 손가락으로 우측으로 스와이프 →",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontSize = 10.sp,
@@ -189,7 +199,11 @@ fun Guide2(
         modifier = Modifier
             .fillMaxWidth()
     ){
-        Box(){
+        Box(
+            modifier = Modifier
+                .semantics(mergeDescendants = true){
+                }
+        ){
             Image(
 
                 painter = painterResource(R.drawable.guide2),
@@ -234,7 +248,7 @@ fun Guide2(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "우측으로 스와이프 →",
+                    text = "두 손가락으로 우측으로 스와이프 →",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontSize = 10.sp,
@@ -253,7 +267,11 @@ fun Guide3(
         modifier = Modifier
             .fillMaxWidth()
     ){
-        Box(){
+        Box(
+            modifier = Modifier
+                .semantics(mergeDescendants = true){
+                }
+        ){
             Image(
 
                 painter = painterResource(R.drawable.guide3),
@@ -298,7 +316,7 @@ fun Guide3(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "우측으로 스와이프 →",
+                    text = "두 손가락으로 우측으로 스와이프 →",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontSize = 10.sp,
@@ -318,7 +336,11 @@ fun Guide4(
         modifier = Modifier
             .fillMaxWidth()
     ){
-        Box(){
+        Box(
+            modifier = Modifier
+                .semantics(mergeDescendants = true){
+                }
+        ){
             Image(
 
                 painter = painterResource(R.drawable.guide4),

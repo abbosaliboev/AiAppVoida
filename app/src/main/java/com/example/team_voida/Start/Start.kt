@@ -35,6 +35,7 @@ import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
 
+// 초기 시작 화면 컴포저블
 @Composable
 fun Start(
     navController: NavController

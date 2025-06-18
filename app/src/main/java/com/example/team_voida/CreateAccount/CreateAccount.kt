@@ -61,6 +61,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+// 계정 생성 메인 컴포저블
 @Composable
 fun CreateAccount(
     email: MutableState<String>,
@@ -74,6 +75,8 @@ fun CreateAccount(
             .fillMaxSize()
             .background(Color.White)
     ){
+
+        // 안내바
         Notification(
             text = "계정생성 페이지입니다. 아래에 차례로 이메일, 비밀번호, 비밀번호 재입력, 전화번호를 입력 후, 하단의 '계정생성' 버튼을 눌러주세요."
         )
@@ -88,6 +91,8 @@ fun CreateAccount(
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
             )
         )
+
+        // 입력란 리스트
         Spacer(Modifier.height(45.dp))
         CreateAccountTextField(email,"이메일 주소")
         Spacer(Modifier.height(10.dp))
@@ -122,6 +127,8 @@ fun CreateAccount(
     }
 }
 
+// 계정 생성에 사용되는 텍스트 필드 커스텀마이즈 컴포저블
+// BasicTextFiled를 활용하여 커스텀마이즈
 // Todo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -200,6 +207,7 @@ fun CreateAccountTextField(
     )
 }
 
+// 위와 동일한 입력란
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccountPassWordField(
@@ -291,6 +299,7 @@ fun CreateAccountPassWordField(
 }
 
 
+// 위와 동일한 입력란
 // Todo, match the inputfiled of this box
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -388,6 +397,7 @@ fun CreateAccountContactField(
     }
 }
 
+// 계정생성 버튼 컴포저블
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CreateAccountButton(
@@ -420,7 +430,7 @@ fun CreateAccountButton(
                         tmp = CheckEmail(email.value)
                     }
                 }
-                Thread.sleep(1000L)
+                Thread.sleep(1500L)
 
                 if(tmp == true){
                     navController.navigate("naming")
