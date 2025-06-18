@@ -18,13 +18,16 @@ import androidx.compose.ui.unit.dp
 import com.example.team_voida.ProductInfo.Loader
 
 @Composable
-fun LoaderSet(info:String = "상품 로딩중"){
+fun LoaderSet(
+    info:String = "상품 로딩중",
+    semantics: String
+){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().background(Color.White)
             .semantics(mergeDescendants = true){
-                text = AnnotatedString("AI가 상품 정보를 요약하는 중입니다. 잠시만 기다려주세요.")
+                text = AnnotatedString(semantics)
             }
     ){
         Loader()

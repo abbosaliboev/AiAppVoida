@@ -61,6 +61,7 @@ import kotlin.math.ceil
 //6. 뷰티
 //7. 패션
 
+// 카테고리 메인 컴포저블
 @Composable
 fun Categories(
     navController: NavController,
@@ -70,6 +71,7 @@ fun Categories(
     selectedIndex: MutableState<Int>,
     categoryCode: MutableState<String>
 ){
+    // 카테고리 해당 하단 네비 활성화
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -91,6 +93,7 @@ fun Categories(
         }
     }
 
+    
     val scrollState = rememberScrollState()
     Column (
         modifier = Modifier
@@ -99,6 +102,7 @@ fun Categories(
             .verticalScroll(scrollState)
 
     ){
+        // 안내바
         Notification("카테고리 페이지입니다. 아래에 목록에서 원하는 상품 목록을 선택해주세요.")
         CategoryTitle()
         Spacer(Modifier.height(20.dp))
@@ -142,7 +146,7 @@ fun CategoryTitle(){
     }
 }
 
-
+// 카테고리 리스트 컴포저블
 @Composable
 fun CategoryColumn(
     categoryList: List<CategoryItem>,
@@ -168,6 +172,7 @@ fun CategoryColumn(
         Spacer(Modifier.height(20.dp))
     }
 }
+// 각 카테고리 카드 컴포저블
 @Composable
 fun CategoryRow(
     categoryItem: CategoryItem,

@@ -68,6 +68,7 @@ import com.example.team_voida.ui.theme.TextColor
 import java.util.Locale
 
 
+// 검색바 메인 컴포저블
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
@@ -83,6 +84,8 @@ fun SearchBar(
 
     val interactionSource = remember { MutableInteractionSource() }
 
+    // 아래의 구글 음성 검색 API 활용
+    // 하단 코드는 오픈소스 코드를 참조하여 활용.
     val speechRecognizerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->

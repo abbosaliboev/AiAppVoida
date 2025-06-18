@@ -70,6 +70,8 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+
+// 결제 메인 컴포저블
 @Composable
 fun Payment(
     navController: NavController,
@@ -82,8 +84,10 @@ fun Payment(
     isPayOne: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
+    // 결제 수단 리스트
     val tmpRegisteredPayMethod = remember { mutableListOf("신용카드", "모바일 페이", "계좌이체") }
 
+    // 결제 화면 하단 네비 Flag bit 설정 
     val paymentInfo:MutableState<PaymentInfo?> = remember { mutableStateOf<PaymentInfo?>(null) }
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
@@ -106,7 +110,7 @@ fun Payment(
         }
     }
 
-
+    // 서버로 부터 해당 계정의 결제정보를 요청
     runBlocking {
         val job = GlobalScope.launch {
             if(isPayOne.value){
@@ -130,6 +134,7 @@ fun Payment(
         }
     }
 
+    // 결제 정보를 받은 경우 결제 페이지 정보 제공
     if(paymentInfo.value != null){
         Column (
             modifier = Modifier
@@ -145,7 +150,11 @@ fun Payment(
                 modifier = Modifier
                     .padding(
                         start = 22.dp
-                    ),
+                    )
+                    .semantics(mergeDescendants = true){
+                        text = AnnotatedString("아래에 배송주소와 연락처를 확인해주세요.")
+                    }
+                ,
                 textAlign = TextAlign.Center,
                 text = "Payment",
                 color = TextLittleDark,
@@ -176,15 +185,19 @@ fun Payment(
             Spacer(Modifier.height(20.dp))
         }
     } else{
-        LoaderSet()
+        LoaderSet(semantics = "결제 정보를 불러오는 중입니다. 잠시만 기다려주세요.")
     }
 
 }
 
+// 배송지 주소 컴포저블
 @Composable
 fun PaymentAddress(){
     Column(
         modifier = Modifier
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("배송지 주소는 서울특별시 서대문구 독립문로 129-1 가나다 아파트세상 203동 1104호 입니다. 배송지를 수정하시려면 다음에 나오는 배송지 수정 버튼을 눌러주세요.")
+            }
             .fillMaxWidth()
             .padding(
                 start = 10.dp,
@@ -256,7 +269,7 @@ fun PaymentAddress(){
             ) {
                 Image(
                     painter = painterResource(R.drawable.payment_edit),
-                    contentDescription = "",
+                    contentDescription = "배송지 수정 버튼",
                     modifier = Modifier
 
                 )
@@ -266,10 +279,14 @@ fun PaymentAddress(){
     }
 }
 
+// 연락처 정보 컴포저블
 @Composable
 fun PaymentContact(){
     Column(
         modifier = Modifier
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("주문자의 전화번호는 010-1234-5678이며, 메일 주소는 123456@gmail.com 입니다. 연락처 정보를 수정하시려면 다음에 나오는 연락처 수정 버튼을 눌러주세요.")
+            }
             .fillMaxWidth()
             .padding(
                 start = 10.dp,
@@ -341,7 +358,7 @@ fun PaymentContact(){
             ) {
                 Image(
                     painter = painterResource(R.drawable.payment_edit),
-                    contentDescription = "",
+                    contentDescription = "연락처 수정 버튼",
                     modifier = Modifier
 
                 )
@@ -352,6 +369,7 @@ fun PaymentContact(){
 }
 
 
+// 결제 상품 개수 컴포저블
 @Composable
 fun PaymentNum(
     cartNum: Int
@@ -401,6 +419,8 @@ fun PaymentNum(
     }
 }
 
+// 결제 정보 목록 컴포저블
+// 시간이 없어 모듈화는 생략함
 @Composable
 fun PaymentRow(
     paymentInfo: MutableState<PaymentInfo?>
@@ -413,6 +433,9 @@ fun PaymentRow(
         Column {
             Row(
                 modifier = Modifier
+                    .semantics(mergeDescendants = true){
+                        text = AnnotatedString("${item.name} 상품이 총 ${item.number} 개 담겨 있습니다. 상품 가격은 ${item.price.toInt()}원 입니다.")
+                    }
                     .padding(
                         start = 10.dp,
                         end = 10.dp
@@ -516,11 +539,15 @@ fun PaymentRow(
     }
 }
 
+// 결제 수단 방법 선택 컴포저블
 @Composable
 fun PaymentMethod(){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("아래에 원하시는 결제 방법을 선택해주세요. 결제 방법을 수정하시려며 다음에 나오는 결제 방법 변경 버튼을 눌러주세요.")
+            }
             .fillMaxWidth()
             .padding(
                 start = 20.dp,
@@ -531,7 +558,6 @@ fun PaymentMethod(){
         ) {
         Text(
             modifier = Modifier,
-
             textAlign = TextAlign.Center,
             text = "Payment Method",
             color = TextLittleDark,
@@ -559,7 +585,7 @@ fun PaymentMethod(){
         ) {
             Image(
                 painter = painterResource(R.drawable.payment_edit),
-                contentDescription = "",
+                contentDescription = "결제 방법 변경 버튼",
                 modifier = Modifier
 
             )
@@ -582,6 +608,10 @@ fun PaymentMethodList(
     ){
         tmpRegisteredPayMethod.forEachIndexed { index, item ->
             Button(
+                modifier = Modifier
+                    .semantics(mergeDescendants = true){
+                        text = AnnotatedString(item)
+                    },
                 onClick = {
                     selected.value = index
                 },

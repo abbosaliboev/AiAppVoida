@@ -61,6 +61,7 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 
+// 검색 결과 메인 컴포저블
 @Composable
 fun SearchResult(
     navController: NavController,
@@ -131,10 +132,12 @@ fun SearchResult(
             Spacer(Modifier.height(30.dp))
         }
     } else {
-        LoaderSet()
+        LoaderSet(semantics = "${input.value} 상품을 검색하는 중입니다. 잠시만 기다려주세요.")
     }
 }
 
+// 검색 결과 목록 컴포저블
+// ProductInfo 컴포저블과 거의 동일한 패턴
 @Composable
 fun RealSearchProducts(
     result: List<SearchResultItem>? = null,
@@ -351,6 +354,8 @@ fun SearchProducts(
     }
 }
 
+// 검색된 각 상품의 카드 컴포저블
+// Product Info와 거의 동일한 패턴
 @Composable
 fun SearchCard(
     id: Int,

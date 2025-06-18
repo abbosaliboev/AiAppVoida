@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.team_voida.R
 import com.example.team_voida.ui.theme.NotifyBlock
 
+// 모든 페이지에 설정되는 상단 알림바 모듈화 컴포저블
 @Composable
 fun Notification(
     text: String

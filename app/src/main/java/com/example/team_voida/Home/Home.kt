@@ -68,6 +68,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+// 홈 메인 컴포저블
 @Composable
 fun Home(
     navController: NavController,
@@ -191,18 +192,22 @@ fun Home(
             Spacer(Modifier.height(45.dp))
         }
     } else{
-        LoaderSet()
+        LoaderSet(semantics = "홈 화면의 상품 정보를 불러오는 중입니다. 잠시만 기다려주세요.")
     }
 
 }
 
+// 검색바 컴포저블
 @Composable
 fun HomeSearchBar(
     navController: NavController,
     input: MutableState<String>
 ){
     Row(
-        modifier = Modifier
+        modifier = Modifier.semantics(mergeDescendants = true){
+            text = AnnotatedString("우측에 음성 검색 버튼이 있습니다.")
+        }
+
 
     ){
         Text(
@@ -227,6 +232,7 @@ fun HomeSearchBar(
     }
 }
 
+// 실시간 인기 상품 리스트 컴포저블
 @Composable
 fun HomePopularRanking(
     navController: NavController,
@@ -258,6 +264,9 @@ fun HomeBar(
 ){
     Row (
         modifier = Modifier
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("우측에 모두 보기를 통해 ${title} 상품들을 만나보세요.")
+            }
             .fillMaxWidth()
             .padding(20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -314,7 +323,7 @@ fun HomeBar(
 }
 
 
-
+// 상품을 각 2개씩 뽑아 출력하는 정렬 컴포저블
 @Composable
 fun HomeProducts(
     result: List<Popular>? = null,
@@ -412,6 +421,7 @@ fun HomeProducts(
     }
 }
 
+// 각 상품 아이템 카드 컴포저블
 @Composable
 fun HomeCard(
     id: Int,
@@ -435,7 +445,7 @@ fun HomeCard(
         modifier = Modifier
             // ScreenReader를 위해 텍스트를 한 묶음으로 처리
             .semantics(mergeDescendants = true){
-                text = AnnotatedString(name + "상품 입니다." + "상품의 가격은" + price + "입니다.")
+                text = AnnotatedString(name + "상품 입니다." + "상품의 가격은" + price.toInt() + "입니다.")
             }
             .width(180.dp)
             .padding(

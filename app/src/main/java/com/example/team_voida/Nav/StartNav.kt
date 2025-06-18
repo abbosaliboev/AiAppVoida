@@ -15,16 +15,20 @@ import com.example.team_voida.Login.Login
 import com.example.team_voida.Start.Guide
 import com.example.team_voida.Start.Start
 
+// 시작화면에서 사용되는 Navigation
 @Composable
 fun StartNav(){
 
     val navController = rememberNavController()
 
+    // 각각 회원가입 또는 로그인에서 사용되는 입력 정보 저장
     val email = remember { mutableStateOf("") }
     val pw = remember { mutableStateOf("") }
     val rePw = remember { mutableStateOf("") }
     val cell = remember { mutableStateOf("") }
     // check git hub
+
+    // StartNav와 관련된 페이지, (로그인,회원가입, 안내...) 에 대한 네비 등록
     NavHost(navController = navController, startDestination = "start") {
         composable("start") { Start(navController = navController) }
         composable("createAccount") {

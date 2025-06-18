@@ -77,6 +77,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 
+// 상품 정보 페이지 메인 컴포저블
 @Composable
 fun ProductInfo(
     navController: NavController,
@@ -91,6 +92,8 @@ fun ProductInfo(
     var result: MutableState<ProductInfoInfo?> = remember { mutableStateOf<ProductInfoInfo?>(null) }
     val review: MutableState<ReviewInfo?> = remember { mutableStateOf<ReviewInfo?>(null) }
     val isReview: MutableState<Boolean> = remember { mutableStateOf(false) }
+
+    // 상품 정보 페이지에 맞는 하단 네비 Flag bit 설정
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             Log.e("123","on_pause")
@@ -112,6 +115,8 @@ fun ProductInfo(
     }
 
 
+    // 각 상품의 소속 카테고리에 맞게 요청 URL을 다르게 설정
+    // 서버에 상품 정보 요청을 보냄
     if(result.value == null){
         runBlocking {
             Log.e("qqq",isItemWhichPart.value.toString())
@@ -145,6 +150,7 @@ fun ProductInfo(
 
     val scrollState = rememberScrollState()
 
+    // 서버로 부터 정보를 받은 경우 결과 출력
     if(result.value != null){
         Column (
             modifier = Modifier
@@ -269,7 +275,7 @@ fun ProductInfo(
             } else {
                 if(review.value == null){
                     Spacer(Modifier.height(5.dp))
-                    LoaderSet(info = "리뷰 로딩중")
+                    LoaderSet(info = "리뷰 로딩중", semantics = "AI가 상품 정보를 요약하는 중입니다. 잠시만 기다려주세요.")
                 } else {
                     Text(
                         modifier = Modifier
@@ -301,13 +307,14 @@ fun ProductInfo(
                     text = AnnotatedString("AI가 상품 정보를 요약하는 중입니다. 잠시만 기다려주세요.")
                 }
         ){
-            Loader()
+            LoaderSet(semantics = "AI가 상품 이미지 정보를 텍스트로 요약하는 중입니다. 잠시만 기다려주세요.")
             Spacer(Modifier.height(15.dp))
             Text("상품 로딩중")
         }
     }
 }
 
+// 상품 정보 하단바 네비게이션
 @Composable
 fun ProductInfoBottomBar(
     price: String,
@@ -320,6 +327,9 @@ fun ProductInfoBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(SearchBarColor)
+            .semantics(mergeDescendants = true){
+                text = AnnotatedString("상품 가격은 ${price}원 입니다. 우측에 장바구니 버튼과 구매하기 버튼이 있습니다.")
+            }
             .padding(
                 top = 20.dp,
                 bottom = 40.dp,
@@ -351,11 +361,12 @@ fun ProductInfoBottomBar(
                 disabledContainerColor = ButtonBlackColor
             ),
             onClick = {
+                Log.e("is",isItemWhichPart.value.toString())
                 runBlocking {
                     val job = GlobalScope.launch {
                         BasketInsert(
                             action = when(isItemWhichPart.value){
-                                0 -> "BasketInsert"
+                                0 -> "/BasketInsert"
                                 1 -> "/BasketInsert/Popular"
                                 2 -> "/BasketInsert/Popular"
                                 3 -> "/BasketInsert/TodaySale"
@@ -409,7 +420,7 @@ fun ProductInfoBottomBar(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "결제하기",
+                text = "구매하기",
                 color = TextWhite,
                 style = TextStyle(
                     fontSize = 15.sp,
