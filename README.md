@@ -152,22 +152,6 @@ See the [LICENSE](./LICENSE) file for more details.
 | Namsraijalbuu Bilguun   | 소프트웨어학부 (3학년) | 백엔드     | bekunee0@gmail.com             |
 | 김태영                  | 소프트웨어학부 (3학년) | 팀장 / 프론트엔드 | rlaxodud7737@naver.com         |
 
-## 🚀 시작하기
-
-### 필수 조건
-
-- Android Studio 설치
-- Python 3.9 이상
-- Django 4.x
-- Git
-
-### 클라이언트 실행
-
-```bash
-git clone https://github.com/your-repo/shopping-accessibility-app.git
-cd android-client
-Android Studio로 열기
-
 
 # 🛍️ Voida Shop – Accessibility-Focused UI/UX Design
 
@@ -261,4 +245,22 @@ Focusing on accessible technology and inclusive design
 
 ---
 
+
+
+
+## 🚀 시작하기
+
+### 필수 조건
+
+- Android Studio 설치
+- Python 3.9 이상
+- Django 4.x
+- Git
+
+### 클라이언트 실행
+
+```bash
+git clone https://github.com/your-repo/shopping-accessibility-app.git
+cd android-client
+Android Studio로 열기
 
