@@ -74,84 +74,6 @@ See the [LICENSE](./LICENSE) file for more details.
 | Namsraijalbuu Bilguun   | Software Engineering   | Backend | bekunee0@gmail.com           |
 | Kim Taeyoung            | Software Engineering   | Team Leader, Frontend| rlaxodud7737@naver.com       |
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Android Studio
-- Python 3.9+
-- Django 4.x
-- Git
-
-
-# 시각 장애인을 위한 온라인 쇼핑 애플리케이션
-
-## 📱 개요
-
-본 프로젝트는 **시각 장애인**을 위해 특별히 설계된 안드로이드 쇼핑 애플리케이션을 개발하는 것을 목표로 합니다. 기존 쇼핑 앱들은 비장애인을 중심으로 디자인되어 있어 시각 장애인에게는 접근성이 떨어집니다. 이에 따라 본 앱은 간결하고 스크린 리더에 최적화된 사용자 인터페이스와 기능들을 제공합니다.
-
-## 🎯 주요 기능
-
-- **시각 장애인 맞춤 UI/UX**
-  - 복잡하지 않고 깔끔한 디자인
-  - 스크린 리더에 최적화된 컴포넌트 배치
-
-- **상단 알림 팝업**
-  - 현재 페이지 정보를 상단 고정 팝업으로 음성 안내
-
-- **화면 확대 기능**
-  - 저시력 사용자를 위한 확대 기능 제공
-
-- **음성 검색 기능**
-  - 음성으로 상품을 검색할 수 있는 기능
-
-- **정보 요약 기능**
-  - 광고 및 불필요한 정보 제거 후 핵심 정보만 제공
-
-- **고대비 테마**
-  - 명확한 시인성을 위한 고대비 색상 제공
-
-- **AI 기반 이미지 설명 기능 (VLM)**
-  - 상품 이미지를 Vision-Language Model (예: Qwen2.5-VL, CogVLM)을 통해 텍스트로 변환하여 스크린 리더가 읽을 수 있도록 지원
-
-## 🛠 기술 스택
-
-- **프론트엔드**: Kotlin (Android)
-  - UI 프레임워크: Jetpack Compose
-- **백엔드**: Django (Python)
-  - REST API 개발
-  - 사용자, 상품, 요약 정보 관리
-- **AI 연동**:
-  - Vision-Language Model (VLM)
-  - 필요시 OCR 기술 보완
-
-## 🧪 향후 개발 방향
-
-- VLM 성능 개선 및 OCR 기술 추가
-- 다국어 지원 확장
-- 저사양 기기 최적화
-
-## 📋 스크럼 및 문서
-
-- 📊 [스크럼 시트 바로가기](https://docs.google.com/spreadsheets/d/19OcmqpZHZYK2h3bqwkBScsr7RUosSOpt8s8sTrfmmuk/edit?usp=sharing)
-- 📂 스크럼 회의록 및 기타 문서는 `documentation` 브랜치에서 확인하실 수 있습니다.
-
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스로 배포됩니다.  
-원 저작권 및 라이선스 고지를 포함하는 한, 개인 또는 상업적 목적으로 자유롭게 사용, 수정, 배포할 수 있습니다.
-
-자세한 내용은 [LICENSE](./LICENSE) 파일을 참고해주세요.
-
-## 👨‍💻 팀원 소개
-
-| 이름                     | 소속 학과           | 역할       | 연락처                          |
-|--------------------------|---------------------|------------|---------------------------------|
-| Jiang Haozheng          | 소프트웨어학부 (3학년) | 백엔드     | jhz190402522@gmail.com         |
-| Abbos Aliboev           | 소프트웨어학부 (3학년) | UI/UX / 프론트엔드    | ali@chungbuk.ac.kr             |
-| Namsraijalbuu Bilguun   | 소프트웨어학부 (3학년) | 백엔드     | bekunee0@gmail.com             |
-| 김태영                  | 소프트웨어학부 (3학년) | 팀장 / 프론트엔드 | rlaxodud7737@naver.com         |
-
 
 # 🛍️ Voida Shop – Accessibility-Focused UI/UX Design
 
@@ -246,6 +168,83 @@ Focusing on accessible technology and inclusive design
 ---
 
 
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Android Studio
+- Python 3.9+
+- Django 4.x
+- Git
+
+
+# 시각 장애인을 위한 온라인 쇼핑 애플리케이션
+
+## 📱 개요
+
+본 프로젝트는 **시각 장애인**을 위해 특별히 설계된 안드로이드 쇼핑 애플리케이션을 개발하는 것을 목표로 합니다. 기존 쇼핑 앱들은 비장애인을 중심으로 디자인되어 있어 시각 장애인에게는 접근성이 떨어집니다. 이에 따라 본 앱은 간결하고 스크린 리더에 최적화된 사용자 인터페이스와 기능들을 제공합니다.
+
+## 🎯 주요 기능
+
+- **시각 장애인 맞춤 UI/UX**
+  - 복잡하지 않고 깔끔한 디자인
+  - 스크린 리더에 최적화된 컴포넌트 배치
+
+- **상단 알림 팝업**
+  - 현재 페이지 정보를 상단 고정 팝업으로 음성 안내
+
+- **화면 확대 기능**
+  - 저시력 사용자를 위한 확대 기능 제공
+
+- **음성 검색 기능**
+  - 음성으로 상품을 검색할 수 있는 기능
+
+- **정보 요약 기능**
+  - 광고 및 불필요한 정보 제거 후 핵심 정보만 제공
+
+- **고대비 테마**
+  - 명확한 시인성을 위한 고대비 색상 제공
+
+- **AI 기반 이미지 설명 기능 (VLM)**
+  - 상품 이미지를 Vision-Language Model (예: Qwen2.5-VL, CogVLM)을 통해 텍스트로 변환하여 스크린 리더가 읽을 수 있도록 지원
+
+## 🛠 기술 스택
+
+- **프론트엔드**: Kotlin (Android)
+  - UI 프레임워크: Jetpack Compose
+- **백엔드**: Django (Python)
+  - REST API 개발
+  - 사용자, 상품, 요약 정보 관리
+- **AI 연동**:
+  - Vision-Language Model (VLM)
+  - 필요시 OCR 기술 보완
+
+## 🧪 향후 개발 방향
+
+- VLM 성능 개선 및 OCR 기술 추가
+- 다국어 지원 확장
+- 저사양 기기 최적화
+
+## 📋 스크럼 및 문서
+
+- 📊 [스크럼 시트 바로가기](https://docs.google.com/spreadsheets/d/19OcmqpZHZYK2h3bqwkBScsr7RUosSOpt8s8sTrfmmuk/edit?usp=sharing)
+- 📂 스크럼 회의록 및 기타 문서는 `documentation` 브랜치에서 확인하실 수 있습니다.
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스로 배포됩니다.  
+원 저작권 및 라이선스 고지를 포함하는 한, 개인 또는 상업적 목적으로 자유롭게 사용, 수정, 배포할 수 있습니다.
+
+자세한 내용은 [LICENSE](./LICENSE) 파일을 참고해주세요.
+
+## 👨‍💻 팀원 소개
+
+| 이름                     | 소속 학과           | 역할       | 연락처                          |
+|--------------------------|---------------------|------------|---------------------------------|
+| Jiang Haozheng          | 소프트웨어학부 (3학년) | 백엔드     | jhz190402522@gmail.com         |
+| Abbos Aliboev           | 소프트웨어학부 (3학년) | UI/UX / 프론트엔드    | ali@chungbuk.ac.kr             |
+| Namsraijalbuu Bilguun   | 소프트웨어학부 (3학년) | 백엔드     | bekunee0@gmail.com             |
+| 김태영                  | 소프트웨어학부 (3학년) | 팀장 / 프론트엔드 | rlaxodud7737@naver.com         |
 
 
 ## 🚀 시작하기
