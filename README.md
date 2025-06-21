@@ -7,6 +7,10 @@ Jira 계정이 없거나, Jira 팀 멤버로 초대받지 못한 경우 아래 �
 Vodia의 Jira 사이트 접근을 원하시면 Jira 구글 계정을 만드신 후, <br>해당 계정의 이메일 주소를 rlaxodud7737@naver.com으로 보내주시길 바랍니다.<br>
 Vodia_Jira : https://hoogdle.atlassian.net/jira/software/projects/SCRUM/list<br>
 
+## Youtube Video
+
+https://youtu.be/hl-KizmJ2p4?si=1UIRuFi_2NkYQvY8
+
 ## 📱 Overview
 
 This project aims to develop an Android shopping application tailored specifically for **visually impaired users**. Unlike most shopping apps that are designed for non-disabled individuals, our application integrates features and design elements that enhance accessibility through a simplified and screen reader–friendly interface.
