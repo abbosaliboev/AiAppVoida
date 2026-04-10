@@ -44,9 +44,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.Tools.MainViewModel
+import com.example.team_voida.session
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
@@ -54,7 +57,8 @@ import com.example.team_voida.ui.theme.TextWhite
 // 사용자 안내 메인 컴포저블
 @Composable
 fun Guide(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainViewModel
 ){
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("1","2","3","4")
@@ -65,13 +69,14 @@ fun Guide(
     ){
         Notification("앱 사용 안내 페이지입니다. 중앙부 화면에서 어플리케이션 사용방법을 안내 받을 수 있습니다. 오른쪽 스와이프 제스쳐를 통해 다음 안내 메시지를 제공 받을 수 있습니다.")
         Spacer(Modifier.height(15.dp))
-        GuidePager(navController)
+        GuidePager(navController,viewModel)
     }
 }
 
 @Composable
 fun GuidePager(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainViewModel
 ){
     Column (
         modifier = Modifier.fillMaxSize()
@@ -97,7 +102,7 @@ fun GuidePager(
                     0 -> Guide1()
                     1 -> Guide2()
                     2 -> Guide3()
-                    3 -> Guide4(navController = navController)
+                    3 -> Guide4(navController = navController, viewModel = viewModel)
                 }
             }
         }
@@ -223,7 +228,7 @@ fun Guide2(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "음량 상하키로 음성검색",
+                    text = "AI Assistant",
                     color = TextLittleDark,
                     style = TextStyle(
                         fontSize = 25.sp,
@@ -235,7 +240,7 @@ fun Guide2(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "더 이상 검색 버튼을 찾지 못하는 문제는 없을 겁니다! 음량 상하 버튼을 동시에 눌러 음성 검색 기능을 활성화하세요!",
+                    text = "오직 음성만으로 쇼핑을 즐길 수 있습니다! 화면 최하단 중앙부에 AI Assistant 버튼을 누른 뒤, 원하는 기능을 말해보세요!",
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 15.sp,
@@ -330,7 +335,8 @@ fun Guide3(
 
 @Composable
 fun Guide4(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainViewModel
 ){
     Column(
         modifier = Modifier
@@ -381,7 +387,7 @@ fun Guide4(
                     )
                 )
                 Spacer(Modifier.height(20.dp))
-                GuideButton(navController)
+                GuideButton(navController, viewModel = viewModel)
             }
         }
     }
@@ -389,7 +395,8 @@ fun Guide4(
 
 @Composable
 fun GuideButton(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainViewModel
 ){
     Button(
         shape = RectangleShape,
@@ -404,6 +411,7 @@ fun GuideButton(
         ,
         onClick = {
             navController.navigate("home")
+            viewModel.login(session.sessionId.value)
         },
         colors = ButtonColors(
             containerColor = ButtonBlue,

@@ -59,6 +59,9 @@ import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
 import com.example.team_voida.SearchBar
 import com.example.team_voida.Tools.LoaderSet
+import com.example.team_voida.themeInStart
+import com.example.team_voida.ui.theme.BackGroundWhite
+import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -109,10 +112,11 @@ fun Home(
     // 임시로 result를 공통으로 사용
 
     if(result != null){
+        Log.e("home","get item")
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(BackGroundWhite)
                 .verticalScroll(scrollState)
 
         ){
@@ -124,7 +128,9 @@ fun Home(
             HomePopularRanking(navController,isWhichPart,1,isItemWhichPart)
             if (result != null) {
                 HomeProducts(
-                    result = result.slice(0..9),
+                    result = result.filter {
+                        it.sector == 1
+                    },
                     productID = productID,
                     navController = navController,
                     isItemWhichPart = isItemWhichPart,
@@ -143,7 +149,9 @@ fun Home(
             )
             if (result != null) {
                 HomeProducts(
-                    result = result.slice(10..19),
+                    result = result.filter {
+                        it.sector == 2
+                    },
                     productID = productID,
                     navController = navController,
                     isItemWhichPart = isItemWhichPart,
@@ -162,7 +170,9 @@ fun Home(
             )
             if (result != null) {
                 HomeProducts(
-                    result = result.slice(20..29),
+                    result = result.filter {
+                        it.sector == 3
+                    },
                     productID = productID,
                     navController = navController,
                     isItemWhichPart = isItemWhichPart,
@@ -181,7 +191,9 @@ fun Home(
             )
             if (result != null) {
                 HomeProducts(
-                    result = result.slice(30..39),
+                    result = result.filter {
+                        it.sector == 4
+                    },
                     productID = productID,
                     navController = navController,
                     isItemWhichPart = isItemWhichPart,
@@ -356,34 +368,37 @@ fun HomeProducts(
             ){
                 if(count != null && index.value <= count){
 
-                    val tmpResult1 = result!![realIndex*2]
-                    val tmpResult2 = result!![realIndex*2+1]
-                    HomeCard(
-                        id = tmpResult1.id,
-                        img = tmpResult1.image_url,
-                        name = tmpResult1.name,
-                        price = tmpResult1.price,
-                        description = tmpResult1.description,
-                        category = tmpResult1.category,
-                        productID = productID,
-                        navController = navController,
-                        isItemWhichPart = isItemWhichPart,
-                        indexRow = indexRow,
-                        barPrice = barPrice
-                    )
-                    HomeCard(
-                        id = tmpResult2.id,
-                        img = tmpResult2.image_url,
-                        name = tmpResult2.name,
-                        price = tmpResult2.price,
-                        description = tmpResult2.description,
-                        category = tmpResult2.category,
-                        productID = productID,
-                        navController = navController,
-                        isItemWhichPart = isItemWhichPart,
-                        indexRow = indexRow,
-                        barPrice = barPrice
-                    )
+                    if(realIndex*2 <= count-1 && realIndex*2+1 <= count-1){
+                        val tmpResult1 = result!![realIndex*2]
+                        val tmpResult2 = result!![realIndex*2+1]
+
+                        HomeCard(
+                            id = tmpResult1.id,
+                            img = tmpResult1.image_url,
+                            name = tmpResult1.name,
+                            price = tmpResult1.price,
+                            description = tmpResult1.description,
+                            category = tmpResult1.category,
+                            productID = productID,
+                            navController = navController,
+                            isItemWhichPart = isItemWhichPart,
+                            indexRow = indexRow,
+                            barPrice = barPrice
+                        )
+                        HomeCard(
+                            id = tmpResult2.id,
+                            img = tmpResult2.image_url,
+                            name = tmpResult2.name,
+                            price = tmpResult2.price,
+                            description = tmpResult2.description,
+                            category = tmpResult2.category,
+                            productID = productID,
+                            navController = navController,
+                            isItemWhichPart = isItemWhichPart,
+                            indexRow = indexRow,
+                            barPrice = barPrice
+                        )
+                    }
                 }
             }
         }
@@ -411,7 +426,7 @@ fun HomeProducts(
             Spacer(Modifier.width(3.dp))
             Text(
                 text = "상품 더보기",
-                color = Color.Black,
+                color = TextColor,
                 style = TextStyle(
                     fontSize = 15.sp,
                     fontFamily = FontFamily(Font(R.font.pretendard_regular)),
@@ -461,7 +476,21 @@ fun HomeCard(
             }
     ){
         Image(
-            painter = painterResource(R.drawable.home_rec),
+            painter = painterResource(
+                if(themeInStart.themeId.value == 0){
+                    R.drawable.home_rec
+
+                } else if(themeInStart.themeId.value == 1) {
+                    R.drawable.home_rec_pink
+                } else if(themeInStart.themeId.value == 2) {
+                    R.drawable.home_rec_green
+                } else if(themeInStart.themeId.value == 3){
+                    R.drawable.home_rec_red
+                }
+                else {
+                    R.drawable.home_rec
+                }
+            ),
             contentDescription = "",
             modifier = Modifier.shadow(elevation = 15.dp, shape = RoundedCornerShape(15.dp))
         )
@@ -501,8 +530,8 @@ fun HomeCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.width(140.dp),
-                    text = name.substring(1,name.length-1),
-                    color = Color.Black,
+                    text = name,
+                    color = TextColor,
                     style = TextStyle(
                         fontSize = 10.sp,
                         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
@@ -514,7 +543,7 @@ fun HomeCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     text = textPrice + "원",
-                    color = Color.Black,
+                    color = TextColor,
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.pretendard_bold)),

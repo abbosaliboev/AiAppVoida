@@ -46,6 +46,7 @@ import coil3.compose.AsyncImage
 import com.example.team_voida.Basket.ComposableLifecycle
 import com.example.team_voida.Notification.Notification
 import com.example.team_voida.R
+import com.example.team_voida.ui.theme.BackGroundWhite
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.LightPink
 import com.example.team_voida.ui.theme.SkyBlue
@@ -69,8 +70,11 @@ fun Categories(
     homeNavFlag: MutableState<Boolean>,
     productFlag: MutableState<Boolean>,
     selectedIndex: MutableState<Int>,
-    categoryCode: MutableState<String>
+    categoryCode: MutableState<String>,
+    isItemWhichPart: MutableState<Int>,
 ){
+
+    isItemWhichPart.value = 0
     // 카테고리 해당 하단 네비 활성화
     ComposableLifecycle { source, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
@@ -98,7 +102,7 @@ fun Categories(
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(BackGroundWhite)
             .verticalScroll(scrollState)
 
     ){
@@ -181,7 +185,7 @@ fun CategoryRow(
     navController: NavController
 ){
     val isSelected = remember { mutableStateOf(false) }
-    val buttonColor = remember { mutableStateOf(Color.White) }
+    val buttonColor = remember { mutableStateOf(BackGroundWhite) }
     val buttonArrow = remember { mutableStateOf(R.drawable.basket_down) }
     val buttonShadow = remember { mutableStateOf(DefaultShadowColor) }
 
@@ -203,7 +207,7 @@ fun CategoryRow(
                         buttonArrow.value = R.drawable.basket_up
                         buttonShadow.value = ButtonBlue
                     } else{
-                        buttonColor.value = Color.White
+                        buttonColor.value = BackGroundWhite
                         buttonArrow.value = R.drawable.basket_down
                         buttonShadow.value = DefaultShadowColor
                     }
@@ -286,10 +290,10 @@ fun CategoryRow(
                     ){
                         Button(
                             colors = ButtonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.White,
-                                disabledContentColor = Color.White,
-                                disabledContainerColor = Color.White
+                                containerColor = BackGroundWhite,
+                                contentColor = BackGroundWhite,
+                                disabledContentColor = BackGroundWhite,
+                                disabledContainerColor = BackGroundWhite
                             ),
                             onClick = {
                                 categoryCode.value = "Vegetable"
@@ -321,10 +325,10 @@ fun CategoryRow(
                         if(i*2+1 < categoryItem.subCategories.size){
                             Button(
                                 colors = ButtonColors(
-                                    containerColor = Color.White,
-                                    contentColor = Color.White,
-                                    disabledContentColor = Color.White,
-                                    disabledContainerColor = Color.White
+                                    containerColor = BackGroundWhite,
+                                    contentColor = BackGroundWhite,
+                                    disabledContentColor = BackGroundWhite,
+                                    disabledContainerColor = BackGroundWhite
                                 ),
                                 onClick = {},
                                 shape = RoundedCornerShape(5.dp),

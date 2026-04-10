@@ -51,9 +51,13 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.team_voida.Notification.Notification
+import com.example.team_voida.Payment.AddBaksetOrder
+import com.example.team_voida.Payment.OrderResponse
+import com.example.team_voida.Payment.PaymentInfo
 import com.example.team_voida.R
 import com.example.team_voida.Tools.LoaderSet
 import com.example.team_voida.session
+import com.example.team_voida.ui.theme.BackGroundWhite
 import com.example.team_voida.ui.theme.BasketPaymentColor
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.Selected
@@ -76,10 +80,13 @@ fun Basket(
     productFlag: MutableState<Boolean>,
     selectedIndex: MutableState<Int>,
     productID: MutableState<Int>,
-    isItemWhichPart: MutableState<Int>
+    isItemWhichPart: MutableState<Int>,
+    isPayPage: MutableState<Boolean>
 ){
     val scrollState = rememberScrollState()
-    
+
+    isPayPage.value = false
+
     // 장바구니 개수
     val cartNum = remember { mutableStateOf(0)}
 
@@ -121,7 +128,7 @@ fun Basket(
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(BackGroundWhite)
                 .verticalScroll(scrollState)
 
         ){
@@ -229,7 +236,7 @@ fun BasketItem(
                 .border(
                     width = 4.dp,
                     shape = RoundedCornerShape(14.dp),
-                    color = Color.White
+                    color = BackGroundWhite
                 )
                 .shadow(elevation = 15.dp, shape = RoundedCornerShape(15.dp))
         )
@@ -461,23 +468,38 @@ fun BasketItemArrange(
                 price = textPrice,
                 basketInfo = basketInfo
             )
+            Log.e("Basket", textPrice)
         }
-        dynamicTotalPrice.value = "%,d".format(totalPrice)
+        Log.e("Basket",totalPrice.toString())
+        dynamicTotalPrice.value = totalPrice.toFloat().toString()
     }
 }
 
 // 장바구니 결제 버튼 컴포저블
 @Composable
 fun BasketPaymentButton(
-    price: String,
+    price: MutableState<String>,
     isPayOne: MutableState<Boolean>,
-    navController: NavController
+    navController: NavController,
+    isPayPage: MutableState<Boolean>,
 ){
+
+    var totalPrice = ""
+    if(price.value != ""){
+        val number = price.value
+        val tmpNum = number.toFloat()
+        totalPrice = "%,.0f".format(tmpNum)
+    }
+
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .semantics(mergeDescendants = true){
-                text = AnnotatedString("총 ${price}원을 결제합니다. 우측의 결제하기 버튼을 눌러주세요.")
+                if(isPayPage.value == false) {
+                    text = AnnotatedString("총 ${price.value}원을 결제합니다. 우측의 결제하기 버튼을 눌러 결제 페이지로 이동해주세요.")
+                } else {
+                    text = AnnotatedString("총 ${price.value}원을 결제합니다. 우측의 결제하기 버튼을 눌러 최종 결제를 진행해주세요.")
+                }
             }
             .background(
                 color = BasketPaymentColor
@@ -496,7 +518,7 @@ fun BasketPaymentButton(
                     top = 10.5.dp
                 )
                 ,
-            text = "총액" + " " + price + "원",
+            text = "총액" + " " + totalPrice.toString() + "원",
             color = TextLittleDark,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_bold)),
@@ -511,8 +533,12 @@ fun BasketPaymentButton(
                 ,
             shape = RoundedCornerShape(15.dp),
             onClick = {
-                isPayOne.value = false
-                navController.navigate("payment")
+                if(isPayPage.value == false) {
+                    isPayOne.value = false
+                    navController.navigate("payment")
+                } else {
+                    navController.navigate("payRegister")
+                }
             },
             colors = ButtonColors(
                 contentColor = ButtonBlue,

@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,11 +66,13 @@ import com.example.team_voida.Payment.PaymentServerOne
 import com.example.team_voida.R
 import com.example.team_voida.Tools.LoaderSet
 import com.example.team_voida.session
+import com.example.team_voida.ui.theme.BackGroundWhite
 import com.example.team_voida.ui.theme.ButtonBlackColor
 import com.example.team_voida.ui.theme.ButtonBlue
 import com.example.team_voida.ui.theme.IconBlue
 import com.example.team_voida.ui.theme.NotifyBlock
 import com.example.team_voida.ui.theme.SearchBarColor
+import com.example.team_voida.ui.theme.TextColor
 import com.example.team_voida.ui.theme.TextLittleDark
 import com.example.team_voida.ui.theme.TextWhite
 import kotlinx.coroutines.GlobalScope
@@ -89,7 +92,28 @@ fun ProductInfo(
     isItemWhichPart: MutableState<Int>,
 ){
 
+
+    var requiredDetail = true
+
+    DisposableEffect(Unit) {
+        Log.e("enter","xxx")
+
+        // Component를 벗어날 때 수행
+        onDispose {
+            //session.sessionId.value
+            requiredDetail = false
+            runBlocking {
+                val job = GlobalScope.launch {
+                    CancelAI(session_id = session.sessionId.value)
+                }
+            }
+            Log.e("enter","xxx")
+        }
+    }
+
     var result: MutableState<ProductInfoInfo?> = remember { mutableStateOf<ProductInfoInfo?>(null) }
+    var detailedResult: MutableState<ProductInfoInfo?> = remember { mutableStateOf<ProductInfoInfo?>(null) }
+
     val review: MutableState<ReviewInfo?> = remember { mutableStateOf<ReviewInfo?>(null) }
     val isReview: MutableState<Boolean> = remember { mutableStateOf(false) }
 
@@ -122,26 +146,82 @@ fun ProductInfo(
             Log.e("qqq",isItemWhichPart.value.toString())
             val job = GlobalScope.launch {
                 when(isItemWhichPart.value){
-                    0 -> result.value = ProductInfoServer(
-                        url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
-                        product_id = productID.value
-                    )
-                    1 -> result.value = ProductInfoServer(
-                        url = "https://fluent-marmoset-immensely.ngrok-free.app/PopularProductInfo",
-                        product_id = productID.value
-                    )
-                    2 -> result.value = ProductInfoServer(
-                        url = "https://fluent-marmoset-immensely.ngrok-free.app/BigSaleProductInfo",
-                        product_id = productID.value
-                    )
-                    3 -> result.value = ProductInfoServer(
-                        url = "https://fluent-marmoset-immensely.ngrok-free.app/TodaySaleProductInfo",
-                        product_id = productID.value
-                    )
-                    4 -> result.value = ProductInfoServer(
-                        url = "https://fluent-marmoset-immensely.ngrok-free.app/NewProductInfo",
-                        product_id = productID.value
-                    )
+                    0 -> {
+                        result.value = ProductInfoServer(
+                            url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
+                            product_id = productID.value,
+                            session_id = session.sessionId.value
+                        )
+                        if(requiredDetail){
+                            detailedResult.value = ProductInfoServer(
+                                url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductDetailedInfo",
+                                product_id = productID.value,
+                                session_id = session.sessionId.value
+
+                            )
+                        }
+                    }
+
+                    1 -> {
+                        result.value = ProductInfoServer(
+                            url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
+                            product_id = productID.value,
+                            session_id = session.sessionId.value
+                        )
+                        if(requiredDetail){
+                            detailedResult.value = ProductInfoServer(
+                                url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductDetailedInfo",
+                                product_id = productID.value,
+                                session_id = session.sessionId.value
+
+                            )
+                        }
+                    }
+                    2 -> {
+                        result.value = ProductInfoServer(
+                            url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
+                            product_id = productID.value,
+                            session_id = session.sessionId.value
+                        )
+                        if(requiredDetail){
+                            detailedResult.value = ProductInfoServer(
+                                url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductDetailedInfo",
+                                product_id = productID.value,
+                                session_id = session.sessionId.value
+
+                            )
+                        }
+                    }
+                    3 -> {
+                        result.value = ProductInfoServer(
+                            url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
+                            product_id = productID.value,
+                            session_id = session.sessionId.value
+                        )
+                        if(requiredDetail){
+                            detailedResult.value = ProductInfoServer(
+                                url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductDetailedInfo",
+                                product_id = productID.value,
+                                session_id = session.sessionId.value
+
+                            )
+                        }
+                    }
+                    4 -> {
+                        result.value = ProductInfoServer(
+                            url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductInfo",
+                            product_id = productID.value,
+                            session_id = session.sessionId.value
+                        )
+                        if(requiredDetail){
+                            detailedResult.value = ProductInfoServer(
+                                url = "https://fluent-marmoset-immensely.ngrok-free.app/ProductDetailedInfo",
+                                product_id = productID.value,
+                                session_id = session.sessionId.value
+
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -155,7 +235,7 @@ fun ProductInfo(
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(BackGroundWhite)
                 .verticalScroll(scrollState)
 
         ){
@@ -191,7 +271,7 @@ fun ProductInfo(
                         start = 20.dp,
                         end = 20.dp
                     ),
-                color = Color.Black
+                color = TextColor
             )
             Spacer(Modifier.height(5.dp))
             Text(
@@ -214,6 +294,48 @@ fun ProductInfo(
                     .padding(
                         start = 18.dp
                     ),
+                text = "상세 정보",
+                color = TextLittleDark,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_bold))
+                )
+            )
+            Spacer(Modifier.height(5.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                color = TextColor
+            )
+            Spacer(Modifier.height(5.dp))
+            if(detailedResult.value != null){
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            start = 18.dp,
+                            end = 18.dp
+                        ),
+                    text = detailedResult.value!!.ai_info,
+                    color = TextLittleDark,
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular))
+                    ),
+                    lineHeight = 30.sp
+                )
+            } else {
+                LoaderSet(info = "AI 요약 중", semantics = "AI가 상품 상세 정보를 생성하는 중입니다. 잠시만 기다려주세요.")
+            }
+            
+            Spacer(Modifier.height(35.dp))
+            Text(
+                modifier = Modifier
+                    .padding(
+                        start = 18.dp
+                    ),
                 text = "리뷰 정보",
                 color = TextLittleDark,
                 style = TextStyle(
@@ -228,7 +350,7 @@ fun ProductInfo(
                         start = 20.dp,
                         end = 20.dp
                     ),
-                color = Color.Black
+                color = TextColor
             )
             Spacer(Modifier.height(5.dp))
 
@@ -250,7 +372,8 @@ fun ProductInfo(
                             val job = GlobalScope.launch {
                                 review.value = ReviewInfoServer(
                                     product_id = productID.value,
-                                    isWhichItem = isItemWhichPart.value
+                                    isWhichItem = isItemWhichPart.value,
+                                    session_id = session.sessionId.value
                                 )
                             }
                         }
@@ -302,7 +425,7 @@ fun ProductInfo(
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().background(Color.White)
+            modifier = Modifier.fillMaxSize().background(BackGroundWhite)
                 .semantics(mergeDescendants = true){
                     text = AnnotatedString("AI가 상품 정보를 요약하는 중입니다. 잠시만 기다려주세요.")
                 }
@@ -367,10 +490,10 @@ fun ProductInfoBottomBar(
                         BasketInsert(
                             action = when(isItemWhichPart.value){
                                 0 -> "/BasketInsert"
-                                1 -> "/BasketInsert/Popular"
-                                2 -> "/BasketInsert/Popular"
-                                3 -> "/BasketInsert/TodaySale"
-                                4 -> "/BasketInsert/New"
+                                1 -> "/BasketInsert"
+                                2 -> "/BasketInsert"
+                                3 -> "/BasketInsert"
+                                4 -> "/BasketInsert"
                                 else -> ""
                             },
                             session_id = session.sessionId.value,
